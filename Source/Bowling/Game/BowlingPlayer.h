@@ -29,13 +29,15 @@ protected:
 
 	// Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float SidewaysSpeed = 1.0f;
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite) float JumpImpulse = 500.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) float BowlingForce = 10.0f;
+
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 MaxJumpCount = 1;
 
 private:
 
 	// Functions
 	void MoveLeftAndRight(float Value);
+	void Bowl();
 
 public:
 

@@ -32,6 +32,9 @@ void ABowlingPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Account for mass in the bowling force
+	BowlingForce *= Mesh->GetMass();
+
 }
 
 // Called to bind functionality to input
@@ -41,6 +44,7 @@ void ABowlingPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	// Custom Input Axis Bindings	
 	InputComponent->BindAxis("MoveLeftAndRight", this, &ABowlingPlayer::MoveLeftAndRight);
+	InputComponent->BindAction("Bowl", IE_Pressed, this, &ABowlingPlayer::Bowl);
 }
 
 void ABowlingPlayer::MoveLeftAndRight(float Value)
@@ -49,4 +53,10 @@ void ABowlingPlayer::MoveLeftAndRight(float Value)
 	FVector NewLocation = GetActorLocation();
 	NewLocation.Y += Value * SidewaysSpeed;
 	SetActorLocation(NewLocation);
+}
+
+void ABowlingPlayer::Bowl()
+{
+	GEngine->AddOnScreenDebugMessage(-3, 0.5f, FColor::White, FString::Printf(TEXT("Got here and power is: %f"), BowlingForce));
+	Mesh->AddImpulse(FVector(BowlingForce, 0, 0));
 }
