@@ -13,19 +13,13 @@ ABowlingPlayer::ABowlingPlayer()
 
 	// Create the components
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 
 	// Set the Root Component to be our Mesh
-	RootComponent = Mesh;
-	// Attach the Spring Arm to the Mesh, spring will now follow the mesh transform
-	SpringArm->SetupAttachment(Mesh);
-	// Attach the Camera to the Spring Arm, camera will now follow the spring arm transform
-	Camera->SetupAttachment(SpringArm);
+	RootComponent = Mesh;	
 
 	// Set physics to true
 	Mesh->SetSimulatePhysics(true);
-
 }
 
 // Called when the game starts or when spawned
@@ -98,7 +92,6 @@ void ABowlingPlayer::CheckCurrentBallSpeed(FVector Velocity)
 	// If the velocity is less than 0.1, the ball has stopped
 	if (Velocity.X < 0.01f)
 	{
-		GEngine->AddOnScreenDebugMessage(99, 15.0f, FColor::White, FString::Printf(TEXT("Ball stopped!: %f"), Velocity.X));
 		BallHasStopped();
 	}
 }

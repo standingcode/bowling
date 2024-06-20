@@ -22,4 +22,5 @@ protected:
 public:
 	int GetPinNumber();
 	bool IsStanding();
+	FVector GetFVector();
 };

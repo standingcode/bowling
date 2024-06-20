@@ -9,20 +9,17 @@ void ABowlingGameModeBase::BeginPlay()
 {
 	// Get all of the bowling pins into the array
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABowlingPin::StaticClass(), BowlingPins);
-
-	//for (size_t i = 0; i < BowlingPins.Num(); i++)
-	//{
-	//	ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
-	//	GEngine->AddOnScreenDebugMessage(i, 10.0f, FColor::White, FString::Printf(TEXT("Bowling pin: %i"), BowlingPin->GetPinNumber()));
-	//}
-
 }
 
 void ABowlingGameModeBase::BowlFinished()
 {
-	for (size_t i = 0; i < BowlingPins.Num(); i++)
+	for (int32 i = 0; i < BowlingPins.Num(); i++)
 	{
 		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
-		GEngine->AddOnScreenDebugMessage(i, 10.0f, FColor::White, FString::Printf(TEXT("Bowling pin is knocked down?: %i"), BowlingPin->GetPinNumber()));
+		GEngine->AddOnScreenDebugMessage(i, 10.0f, FColor::White, FString::Printf(
+			TEXT("Bowling pin %i is knocked down?: %d"), BowlingPin->GetPinNumber(), BowlingPin->IsStanding() ? TEXT("Standing") : TEXT("Down"))
+		);
+
+		//
 	}
 }

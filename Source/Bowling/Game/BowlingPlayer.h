@@ -26,7 +26,6 @@ protected:
 
 	// Definite components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components") UStaticMeshComponent* Mesh;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components") class USpringArmComponent* SpringArm;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components") class UCameraComponent* Camera;
 
 	// Variables

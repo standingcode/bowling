@@ -9,7 +9,6 @@ int ABowlingPin::GetPinNumber()
 }
 
 bool ABowlingPin::IsStanding()
-{/*
-	return Mesh->GetRelativeRotationFromWorld()->GetUpVector().Z > 0.1f;*/
+{
+	return GetActorUpVector().ZAxisVector == FVector(0, 0, 1);
 }
-
