@@ -22,6 +22,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void Tick(float DeltaTime);
+
 	// Definite components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components") UStaticMeshComponent* Mesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components") class USpringArmComponent* SpringArm;
@@ -31,6 +33,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float SidewaysSpeed = 1.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float BowlingForce = 10.0f;
 
+	bool CanBowl = true;
+	bool StartCheckingForBallStopping = false;
+
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 MaxJumpCount = 1;
 
 private:
@@ -38,6 +43,11 @@ private:
 	// Functions
 	void MoveLeftAndRight(float Value);
 	void Bowl();
+
+	void BallHasStopped();
+
+	UFUNCTION(BlueprintCallable)
+	void CheckCurrentBallSpeed(FVector velocity);
 
 public:
 

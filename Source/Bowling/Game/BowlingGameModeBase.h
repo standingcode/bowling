@@ -7,11 +7,22 @@
 #include "BowlingGameModeBase.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class BOWLING_API ABowlingGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+protected:
+
+	virtual void BeginPlay() override;
+
+	TArray<AActor*> BowlingPins;
+
+
+public:
+
+	void BowlFinished();
+
 };
