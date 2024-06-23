@@ -3,6 +3,12 @@
 
 #include "BowlingPin.h"
 
+// Sets default values
+ABowlingPin::ABowlingPin()
+{
+	//OriginalUpVector = GetActorUpVector();
+}
+
 int ABowlingPin::GetPinNumber()
 {
 	return PinNumber;
@@ -10,5 +16,5 @@ int ABowlingPin::GetPinNumber()
 
 bool ABowlingPin::IsStanding()
 {
-	return GetActorUpVector().ZAxisVector == FVector(0, 0, 1);
+	return GetActorUpVector().Z > MinimumValueToConsiderStillStanding;
 }

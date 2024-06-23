@@ -19,8 +19,11 @@ protected:
 	// Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) int PinNumber = -1;
 
+	float MinimumValueToConsiderStillStanding = 0.97f;
+
+	ABowlingPin();
+
 public:
 	int GetPinNumber();
 	bool IsStanding();
-	FVector GetFVector();
 };

@@ -26,7 +26,7 @@ protected:
 
 	// Definite components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components") UStaticMeshComponent* Mesh;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components") class UCameraComponent* Camera;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components") class UCameraComponent* Camera;
 
 	// Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float SidewaysSpeed = 1.0f;

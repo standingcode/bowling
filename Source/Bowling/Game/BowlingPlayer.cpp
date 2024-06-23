@@ -13,10 +13,10 @@ ABowlingPlayer::ABowlingPlayer()
 
 	// Create the components
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
-	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
+	//Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 
 	// Set the Root Component to be our Mesh
-	RootComponent = Mesh;	
+	RootComponent = Mesh;
 
 	// Set physics to true
 	Mesh->SetSimulatePhysics(true);
