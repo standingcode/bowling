@@ -16,13 +16,22 @@ class BOWLING_API ABowlingGameModeBase : public AGameModeBase
 
 protected:
 
+	// Functions
 	virtual void BeginPlay() override;
+	void Tick(float DeltaTime);
 
+	void ShowResultsOfBowl();
+	void CheckPinMovement();
+	void BowlFinished();
+
+
+	// Variables
 	TArray<AActor*> BowlingPins;
-
+	bool CheckForPinsToStopMoving = false;
 
 public:
+	bool CanBowl = true;
 
-	void BowlFinished();
+	void BallReportedStoppedOrOffTheEdge();
 
 };

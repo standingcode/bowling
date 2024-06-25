@@ -11,7 +11,14 @@ void ABowlingGameModeBase::BeginPlay()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABowlingPin::StaticClass(), BowlingPins);
 }
 
-void ABowlingGameModeBase::BowlFinished()
+void ABowlingGameModeBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	CheckPinMovement();
+}
+
+void ABowlingGameModeBase::ShowResultsOfBowl()
 {
 	for (int32 i = 0; i < BowlingPins.Num(); i++)
 	{
@@ -22,4 +29,36 @@ void ABowlingGameModeBase::BowlFinished()
 			BowlingPin->IsStanding() ? TEXT("Standing") : TEXT("Down"))
 		);
 	}
+}
+
+void ABowlingGameModeBase::CheckPinMovement()
+{
+	if (CanBowl || !CheckForPinsToStopMoving) { return; }
+
+	for (int32 i = 0; i < BowlingPins.Num(); i++)
+	{
+		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
+
+		if (BowlingPin->PinFellOffEdge())
+		{
+			continue;
+		}
+
+		if (!BowlingPin->GetVelocity().IsNearlyZero())
+		{
+			return;
+		}
+	}
+
+	BowlFinished();
+}
+
+void ABowlingGameModeBase::BowlFinished()
+{
+	ShowResultsOfBowl();
+}
+
+void ABowlingGameModeBase::BallReportedStoppedOrOffTheEdge()
+{
+	CheckForPinsToStopMoving = true;
 }

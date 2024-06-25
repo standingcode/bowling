@@ -26,4 +26,6 @@ protected:
 public:
 	int GetPinNumber();
 	bool IsStanding();
+
+	bool PinFellOffEdge();
 };

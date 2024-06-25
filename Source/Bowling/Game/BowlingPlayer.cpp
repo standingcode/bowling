@@ -30,15 +30,16 @@ void ABowlingPlayer::BeginPlay()
 	// Account for mass in the bowling force
 	BowlingForce *= Mesh->GetMass();
 
+	// Reference to the GameModeBase script
+	GameMode = Cast<ABowlingGameModeBase>(GetWorld()->GetAuthGameMode());
 }
 
 void ABowlingPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Check the current speed of the ball
 	CheckCurrentBallSpeed(Mesh->GetComponentVelocity());
-
+	CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge(GetActorLocation().Z);
 }
 
 // Called to bind functionality to input
@@ -62,22 +63,16 @@ void ABowlingPlayer::MoveLeftAndRight(float Value)
 
 void ABowlingPlayer::Bowl()
 {
-	if (!CanBowl) { return; }
+	if (!GameMode->CanBowl) { return; }
 
-	CanBowl = false;
+	GameMode->CanBowl = false;
 	//GEngine->AddOnScreenDebugMessage(-3, 0.5f, FColor::White, FString::Printf(TEXT("Got here and power is: %f"), BowlingForce));
 	Mesh->AddImpulse(FVector(BowlingForce, 0, 0));
 }
 
-void ABowlingPlayer::BallHasStopped()
-{
-	ABowlingGameModeBase* GameMode = Cast<ABowlingGameModeBase>(GetWorld()->GetAuthGameMode());
-	GameMode->BowlFinished();
-}
-
 void ABowlingPlayer::CheckCurrentBallSpeed(FVector Velocity)
 {
-	if (CanBowl) { return; }
+	if (GameMode->CanBowl) { return; }
 
 	if (!StartCheckingForBallStopping)
 	{
@@ -92,6 +87,16 @@ void ABowlingPlayer::CheckCurrentBallSpeed(FVector Velocity)
 	// If the velocity is less than 0.1, the ball has stopped
 	if (Velocity.X < 0.01f)
 	{
-		BallHasStopped();
+		GameMode->BallReportedStoppedOrOffTheEdge();
+	}
+}
+
+void ABowlingPlayer::CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge(float ZPosition)
+{
+	if (GameMode->CanBowl) { return; }
+
+	if (ZPosition < 0)
+	{
+		GameMode->BallReportedStoppedOrOffTheEdge();
 	}
 }
