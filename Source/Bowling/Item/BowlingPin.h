@@ -20,12 +20,30 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) int PinNumber = -1;
 
 	float MinimumValueToConsiderStillStanding = 0.97f;
+	FVector OriginalPosition;
+	FRotator OriginalRotation;
+	bool PinFellOffEdge = false;
+
+	// Functions
 
 	ABowlingPin();
+	virtual void BeginPlay() override;
+	void Tick(float DeltaTime);
+
+	void HidePin();
+	void ShowPin();
+	void DisableCollisions();
+	void EnableCollisions();
+	void CheckIfPinFellOffEdge();
 
 public:
+
+	// Functions
+	void ResetToOriginalPositionAndRotation();
+
+	// Variables
 	int GetPinNumber();
 	bool IsStanding();
-
-	bool PinFellOffEdge();
+	bool DidFallOffEdge();
+	void ResetPin();
 };

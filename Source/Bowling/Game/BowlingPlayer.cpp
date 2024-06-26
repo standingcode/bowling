@@ -50,7 +50,7 @@ void ABowlingPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	// Custom Input Axis Bindings	
 	InputComponent->BindAxis("MoveLeftAndRight", this, &ABowlingPlayer::MoveLeftAndRight);
 	InputComponent->BindAction("Bowl", IE_Pressed, this, &ABowlingPlayer::Bowl);
-
+	InputComponent->BindAction("Reset", IE_Pressed, this, &ABowlingPlayer::Reset);
 }
 
 void ABowlingPlayer::MoveLeftAndRight(float Value)
@@ -66,37 +66,46 @@ void ABowlingPlayer::Bowl()
 	if (!GameMode->CanBowl) { return; }
 
 	GameMode->CanBowl = false;
+	BallIsInMotion = true;
 	//GEngine->AddOnScreenDebugMessage(-3, 0.5f, FColor::White, FString::Printf(TEXT("Got here and power is: %f"), BowlingForce));
 	Mesh->AddImpulse(FVector(BowlingForce, 0, 0));
 }
 
 void ABowlingPlayer::CheckCurrentBallSpeed(FVector Velocity)
 {
-	if (GameMode->CanBowl) { return; }
-
-	if (!StartCheckingForBallStopping)
+	if (Velocity.X > 0.01f)
 	{
-		if (Velocity.X > 0.01f)
-		{
-			StartCheckingForBallStopping = true;
-		}
-
-		return;
+		BallIsInMotion = true;
 	}
+	else
+	{
+		BallIsInMotion = false;
+	}
+
+	if (GameMode->CanBowl || !BallIsInMotion) { return; }
 
 	// If the velocity is less than 0.1, the ball has stopped
 	if (Velocity.X < 0.01f)
 	{
+		BallIsInMotion = false;
 		GameMode->BallReportedStoppedOrOffTheEdge();
 	}
 }
 
 void ABowlingPlayer::CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge(float ZPosition)
 {
-	if (GameMode->CanBowl) { return; }
+	if (GameMode->CanBowl || !BallIsInMotion) { return; }
 
 	if (ZPosition < 0)
 	{
+		BallIsInMotion = false;
 		GameMode->BallReportedStoppedOrOffTheEdge();
 	}
 }
+
+void ABowlingPlayer::Reset()
+{
+	GameMode->Reset();
+	Mesh->SetPhysicsLinearVelocity(FVector(0.0f, 0.0f, 0.0f));
+}
+

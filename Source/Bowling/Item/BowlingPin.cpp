@@ -9,6 +9,38 @@ ABowlingPin::ABowlingPin()
 
 }
 
+void ABowlingPin::BeginPlay()
+{
+	Super::BeginPlay();
+	OriginalPosition = GetActorLocation();
+	OriginalRotation = GetActorRotation();
+}
+
+void ABowlingPin::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	CheckIfPinFellOffEdge();
+}
+
+#pragma region Resetting
+
+void ABowlingPin::ResetPin()
+{
+	DisableCollisions();
+	ResetToOriginalPositionAndRotation();
+	//HidePin();
+
+}
+
+void ABowlingPin::ResetToOriginalPositionAndRotation()
+{
+	SetActorLocation(OriginalPosition);
+	SetActorRotation(OriginalRotation);
+}
+
+#pragma endregion
+
 int ABowlingPin::GetPinNumber()
 {
 	return PinNumber;
@@ -17,13 +49,44 @@ int ABowlingPin::GetPinNumber()
 bool ABowlingPin::IsStanding()
 {
 	// The pin might be falling through the universe, if so it is not standing, return false
-	if (PinFellOffEdge()) { return false; }
+	if (DidFallOffEdge()) { return false; }
 
 	// Is the pin standing up?
 	return GetActorUpVector().Z > MinimumValueToConsiderStillStanding;
 }
 
-bool ABowlingPin::PinFellOffEdge()
+bool ABowlingPin::DidFallOffEdge()
 {
-	return GetActorLocation().Z < 0.0f;
+	return PinFellOffEdge;
+}
+
+void ABowlingPin::CheckIfPinFellOffEdge()
+{
+	if (GetActorLocation().Z < 0.0f)
+	{
+		PinFellOffEdge = true;
+		ResetPin();
+	}
+}
+
+void ABowlingPin::HidePin()
+{
+	SetActorHiddenInGame(true);
+}
+
+void ABowlingPin::ShowPin()
+{
+	SetActorHiddenInGame(false);
+}
+
+void ABowlingPin::DisableCollisions()
+{
+	Mesh->SetSimulatePhysics(false);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void ABowlingPin::EnableCollisions()
+{
+	Mesh->SetSimulatePhysics(true);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }

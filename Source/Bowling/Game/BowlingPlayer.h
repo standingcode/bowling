@@ -31,9 +31,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float SidewaysSpeed = 1.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float BowlingForce = 10.0f;
 
-	bool StartCheckingForBallStopping = false;
+	bool BallIsInMotion = false;
 	class ABowlingGameModeBase* GameMode;
-
 
 private:
 
@@ -46,6 +45,8 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge(float ZPosition);
+
+	void Reset();
 
 public:
 
