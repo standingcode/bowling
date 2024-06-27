@@ -48,6 +48,13 @@ private:
 
 	void Reset();
 
+	void HideBall();
+	void ShowBall();
+	void DisableCollisions();
+	void EnableCollisions();
+
+	void ReportBallOffEdgeOrStoppedMoving();
+
 public:
 
 	// Called to bind functionality to input

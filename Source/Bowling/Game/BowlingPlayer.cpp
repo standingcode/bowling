@@ -87,8 +87,7 @@ void ABowlingPlayer::CheckCurrentBallSpeed(FVector Velocity)
 	// If the velocity is less than 0.1, the ball has stopped
 	if (Velocity.X < 0.01f)
 	{
-		BallIsInMotion = false;
-		GameMode->BallReportedStoppedOrOffTheEdge();
+		ReportBallOffEdgeOrStoppedMoving();
 	}
 }
 
@@ -98,14 +97,40 @@ void ABowlingPlayer::CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge
 
 	if (ZPosition < 0)
 	{
-		BallIsInMotion = false;
-		GameMode->BallReportedStoppedOrOffTheEdge();
+		ReportBallOffEdgeOrStoppedMoving();
 	}
+}
+
+void ABowlingPlayer::ReportBallOffEdgeOrStoppedMoving()
+{	
+	DisableCollisions();
+	BallIsInMotion = false;
+	GameMode->BallReportedStoppedOrOffTheEdge();
 }
 
 void ABowlingPlayer::Reset()
 {
 	GameMode->Reset();
-	Mesh->SetPhysicsLinearVelocity(FVector(0.0f, 0.0f, 0.0f));
 }
 
+void ABowlingPlayer::ShowBall()
+{
+	SetActorHiddenInGame(false);
+}
+
+void ABowlingPlayer::HideBall()
+{
+	SetActorHiddenInGame(true);
+}
+
+void ABowlingPlayer::EnableCollisions()
+{
+	Mesh->SetSimulatePhysics(true);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+}
+
+void ABowlingPlayer::DisableCollisions()
+{
+	Mesh->SetSimulatePhysics(false);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}

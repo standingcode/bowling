@@ -50,6 +50,7 @@ void ABowlingGameModeBase::CheckPinMovement()
 
 		if (!BowlingPin->GetVelocity().IsNearlyZero())
 		{
+			CheckForPinsToStopMoving = true;
 			return;
 		}
 	}
@@ -61,17 +62,6 @@ void ABowlingGameModeBase::CheckPinMovement()
 void ABowlingGameModeBase::BowlFinished_Implementation()
 {
 	ShowResultsOfBowl();
-}
-
-void ABowlingGameModeBase::Reset()
-{
-	GEngine->AddOnScreenDebugMessage(1000, 10.0f, FColor::White, FString::Printf(TEXT("Reset")));
-
-	for (int32 i = 0; i < BowlingPins.Num(); i++)
-	{
-		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
-		BowlingPin->ResetToOriginalPositionAndRotation();
-	}
 }
 
 void ABowlingGameModeBase::BallReportedStoppedOrOffTheEdge()

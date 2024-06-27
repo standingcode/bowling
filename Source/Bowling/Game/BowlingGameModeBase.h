@@ -22,6 +22,8 @@ protected:
 
 	void ShowResultsOfBowl();
 	void CheckPinMovement();
+	void DescendPins();
+	void AnalyseState();
 
 	// Variables
 	TArray<AActor*> BowlingPins;
@@ -31,7 +33,6 @@ public:
 	bool CanBowl = true;
 
 	void BallReportedStoppedOrOffTheEdge();
-	void Reset();
 
 	UFUNCTION(BlueprintNativeEvent)
 	void BowlFinished();
