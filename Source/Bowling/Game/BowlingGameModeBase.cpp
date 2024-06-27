@@ -59,12 +59,31 @@ void ABowlingGameModeBase::CheckPinMovement()
 	BowlFinished();
 }
 
-void ABowlingGameModeBase::BowlFinished_Implementation()
+void ABowlingGameModeBase::AnalyseState()
 {
-	ShowResultsOfBowl();
+}
+
+void ABowlingGameModeBase::EnablePinsPhysics()
+{
+	for (int32 i = 0; i < BowlingPins.Num(); i++)
+	{
+		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
+
+		BowlingPin->EnableCollisions();
+	}
 }
 
 void ABowlingGameModeBase::BallReportedStoppedOrOffTheEdge()
 {
 	CheckForPinsToStopMoving = true;
+}
+
+void ABowlingGameModeBase::BowlFinished_Implementation()
+{
+	ShowResultsOfBowl();
+}
+
+void ABowlingGameModeBase::PinsDownAndReady_Implementation()
+{
+	EnablePinsPhysics();
 }

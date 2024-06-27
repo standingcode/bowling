@@ -32,6 +32,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float BowlingForce = 10.0f;
 
 	bool BallIsInMotion = false;
+	bool BallWasInMotion = false;
 	class ABowlingGameModeBase* GameMode;
 
 private:

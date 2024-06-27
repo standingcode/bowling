@@ -33,7 +33,7 @@ protected:
 	void HidePin();
 	void ShowPin();
 	void DisableCollisions();
-	void EnableCollisions();
+
 	void CheckIfPinFellOffEdge();
 
 public:
@@ -46,4 +46,5 @@ public:
 	bool IsStanding();
 	bool DidFallOffEdge();
 	void ResetPin();
+	void EnableCollisions();
 };

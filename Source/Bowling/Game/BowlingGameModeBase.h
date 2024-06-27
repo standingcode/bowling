@@ -22,18 +22,22 @@ protected:
 
 	void ShowResultsOfBowl();
 	void CheckPinMovement();
-	void DescendPins();
 	void AnalyseState();
+	void EnablePinsPhysics();
 
 	// Variables
 	TArray<AActor*> BowlingPins;
 	bool CheckForPinsToStopMoving = false;
 
 public:
-	bool CanBowl = true;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite);
+	bool CanBowl = false;
 
 	void BallReportedStoppedOrOffTheEdge();
 
 	UFUNCTION(BlueprintNativeEvent)
 	void BowlFinished();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void PinsDownAndReady();
 };
