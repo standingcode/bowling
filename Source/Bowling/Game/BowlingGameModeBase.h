@@ -6,6 +6,18 @@
 #include "GameFramework/GameModeBase.h"
 #include "BowlingGameModeBase.generated.h"
 
+UENUM(BlueprintType)
+enum class BowlingState : uint8
+{
+	NewGame = 0 UMETA(DisplayName = "New game"),
+	ReadyToBowl = 1 UMETA(DisplayName = "Ready to bowl"),
+	PlayerHasLaunchedBall = 2 UMETA(DisplayName = "Player has launched ball"),
+	BallInMotion = 3 UMETA(DisplayName = "BallInMotion"),
+	CheckState = 4 UMETA(DisplayName = "CheckState"),
+	ResetState = 5 UMETA(DisplayName = "ResetState"),
+	SweepState = 6 UMETA(DisplayName = "SweepState")
+};
+
 /**
  *
  */
@@ -27,17 +39,35 @@ protected:
 
 	// Variables
 	TArray<AActor*> BowlingPins;
-	bool CheckForPinsToStopMoving = false;
+	bool PinsBeingChecked = false;
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite);
-	bool CanBowl = false;
 
-	void BallReportedStoppedOrOffTheEdge();
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite);
+	BowlingState BowlingState = BowlingState::NewGame;
 
-	UFUNCTION(BlueprintNativeEvent)
-	void BowlFinished();
+	void ChangeState(uint8 BowlingStateIndex);
+
+	// State events
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void PinsDownAndReady();
+	void ReadyToBowl();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void PlayerHasLaunchedBall();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void BallInMotion();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void CheckPinsHaveStoppedMoving();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void CheckState();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SweepState();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void ResetState();
 };

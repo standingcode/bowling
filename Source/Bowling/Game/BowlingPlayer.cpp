@@ -63,33 +63,36 @@ void ABowlingPlayer::MoveLeftAndRight(float Value)
 
 void ABowlingPlayer::Bowl()
 {
-	if (!GameMode->CanBowl) { return; }
+	if (!(GameMode->BowlingState == BowlingState::ReadyToBowl)) { return; }
 
-	GameMode->CanBowl = false;
+	GameMode->ChangeState(static_cast<uint8>(BowlingState::PlayerHasLaunchedBall));
 	//GEngine->AddOnScreenDebugMessage(-3, 0.5f, FColor::White, FString::Printf(TEXT("Got here and power is: %f"), BowlingForce));
 	Mesh->AddImpulse(FVector(BowlingForce, 0, 0));
 }
 
 void ABowlingPlayer::CheckCurrentBallSpeed(FVector Velocity)
 {
-	if (Velocity.X < 0.1f)
+	if (GameMode->BowlingState == BowlingState::PlayerHasLaunchedBall)
 	{
-		BallIsInMotion = false;
-		if (BallWasInMotion)
+		if (Velocity.X > 0.05f)
+		{
+			GameMode->ChangeState(static_cast<uint8>(BowlingState::BallInMotion));
+			return;
+		}
+	}
+
+	if (GameMode->BowlingState == BowlingState::BallInMotion)
+	{
+		if (Velocity.X < 0.05f)
 		{
 			ReportBallOffEdgeOrStoppedMoving();
 		}
-	}
-	else
-	{
-		BallIsInMotion = true;
-		BallWasInMotion = true;
 	}
 }
 
 void ABowlingPlayer::CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge(float ZPosition)
 {
-	if (GameMode->CanBowl || !BallIsInMotion) { return; }
+	if (!(GameMode->BowlingState == BowlingState::BallInMotion)) { return; }
 
 	if (ZPosition < 0.0f) { ReportBallOffEdgeOrStoppedMoving(); }
 }
@@ -97,8 +100,7 @@ void ABowlingPlayer::CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge
 void ABowlingPlayer::ReportBallOffEdgeOrStoppedMoving()
 {
 	DisableCollisions();
-	BallIsInMotion = false;
-	GameMode->BallReportedStoppedOrOffTheEdge();
+	GameMode->ChangeState(static_cast<uint8>(BowlingState::CheckState));
 }
 
 void ABowlingPlayer::Reset()

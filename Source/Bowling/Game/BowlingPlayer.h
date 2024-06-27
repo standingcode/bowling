@@ -33,6 +33,7 @@ protected:
 
 	bool BallIsInMotion = false;
 	bool BallWasInMotion = false;
+
 	class ABowlingGameModeBase* GameMode;
 
 private:

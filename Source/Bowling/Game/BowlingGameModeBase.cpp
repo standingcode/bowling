@@ -35,9 +35,9 @@ void ABowlingGameModeBase::ShowResultsOfBowl()
 
 void ABowlingGameModeBase::CheckPinMovement()
 {
-	if (CanBowl || !CheckForPinsToStopMoving) { return; }
+	if (!(BowlingState == BowlingState::CheckState) || PinsBeingChecked) { return; }
 
-	CheckForPinsToStopMoving = false;
+	PinsBeingChecked = true;
 
 	for (int32 i = 0; i < BowlingPins.Num(); i++)
 	{
@@ -50,13 +50,12 @@ void ABowlingGameModeBase::CheckPinMovement()
 
 		if (!BowlingPin->GetVelocity().IsNearlyZero())
 		{
-			CheckForPinsToStopMoving = true;
+			PinsBeingChecked = false;
 			return;
 		}
 	}
 
-	// Need to stop this triggering multiple times
-	BowlFinished();
+	ChangeState(static_cast<uint8>(BowlingState::CheckState));
 }
 
 void ABowlingGameModeBase::AnalyseState()
@@ -73,17 +72,71 @@ void ABowlingGameModeBase::EnablePinsPhysics()
 	}
 }
 
-void ABowlingGameModeBase::BallReportedStoppedOrOffTheEdge()
+
+// State stuff
+
+void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 {
-	CheckForPinsToStopMoving = true;
+	enum BowlingState NewState = static_cast<enum BowlingState>(BowlingStateIndex);
+	BowlingState = NewState;
+
+	switch (NewState)
+	{
+	case BowlingState::NewGame:
+		// This might be implemented later
+		break;
+	case BowlingState::ReadyToBowl:
+		EnablePinsPhysics();
+		break;
+	case BowlingState::PlayerHasLaunchedBall:
+		break;
+	case BowlingState::BallInMotion:
+		break;
+	case BowlingState::CheckState:
+		ChangeState(static_cast<uint8>(BowlingState::SweepState));
+		break;
+	case BowlingState::SweepState:
+		SweepState();
+		break;
+	case BowlingState::ResetState:
+		break;
+
+	default:
+		break;
+	}
 }
 
-void ABowlingGameModeBase::BowlFinished_Implementation()
+void ABowlingGameModeBase::ReadyToBowl_Implementation()
 {
-	ShowResultsOfBowl();
+	ChangeState(static_cast<uint8>(BowlingState::ReadyToBowl));
 }
 
-void ABowlingGameModeBase::PinsDownAndReady_Implementation()
+void ABowlingGameModeBase::PlayerHasLaunchedBall_Implementation()
 {
-	EnablePinsPhysics();
+
+}
+
+void ABowlingGameModeBase::BallInMotion_Implementation()
+{
+
+}
+
+void ABowlingGameModeBase::CheckPinsHaveStoppedMoving_Implementation()
+{
+
+}
+
+void ABowlingGameModeBase::CheckState_Implementation()
+{
+
+}
+
+void ABowlingGameModeBase::SweepState_Implementation()
+{
+
+}
+
+void ABowlingGameModeBase::ResetState_Implementation()
+{
+
 }
