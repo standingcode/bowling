@@ -14,7 +14,9 @@ void ABowlingPin::BeginPlay()
 	Parent = GetAttachParentActor();
 
 	Super::BeginPlay();
-	OriginalPosition = GetActorLocation();
+
+	OriginalLocation = GetActorLocation();
+	RootOriginalLocationZ = GetAttachParentActor()->GetTransform().GetLocation().Z;
 	OriginalRotation = GetActorRotation();
 }
 
@@ -31,13 +33,12 @@ void ABowlingPin::ResetPin()
 {
 	DisableCollisionsAndPhysics();
 	ResetToOriginalPositionAndRotation();
-	//HidePin();
-
+	HidePin();
 }
 
 void ABowlingPin::ResetToOriginalPositionAndRotation()
 {
-	SetActorLocation(OriginalPosition);
+	SetActorLocation(OriginalLocation + FVector(0.0f, 0.0f, GetRootZOffsetComparedToOriginalLocation()));
 	SetActorRotation(OriginalRotation);
 }
 
@@ -69,6 +70,11 @@ void ABowlingPin::CheckIfPinFellOffEdge()
 		PinFellOffEdge = true;
 		ResetPin();
 	}
+}
+
+float ABowlingPin::GetRootZOffsetComparedToOriginalLocation()
+{
+	return GetAttachParentActor()->GetTransform().GetLocation().Z - RootOriginalLocationZ;
 }
 
 void ABowlingPin::HidePin()

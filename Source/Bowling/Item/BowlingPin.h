@@ -17,12 +17,14 @@ class BOWLING_API ABowlingPin : public ABowlingItemBase
 protected:
 
 	// Variables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) int PinNumber = -1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int PinNumber = -1;
 
 	float MinimumValueToConsiderStillStanding = 0.97f;
-	FVector OriginalPosition;
+	FVector OriginalLocation;
 	FRotator OriginalRotation;
 	bool PinFellOffEdge = false;
+	float RootOriginalLocationZ;
 
 	// Functions
 
@@ -33,6 +35,7 @@ protected:
 	void HidePin();
 	void ShowPin();
 	void CheckIfPinFellOffEdge();
+	float GetRootZOffsetComparedToOriginalLocation();
 
 public:
 
