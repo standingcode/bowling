@@ -13,9 +13,10 @@ enum class BowlingState : uint8
 	ReadyToBowl = 1 UMETA(DisplayName = "Ready to bowl"),
 	PlayerHasLaunchedBall = 2 UMETA(DisplayName = "Player has launched ball"),
 	BallInMotion = 3 UMETA(DisplayName = "BallInMotion"),
-	CheckState = 4 UMETA(DisplayName = "CheckState"),
-	ResetState = 5 UMETA(DisplayName = "ResetState"),
-	SweepState = 6 UMETA(DisplayName = "SweepState")
+	CheckPinsHaveStoppedMoving = 4 UMETA(DisplayName = "Check pins have stopped moving"),
+	CheckState = 5 UMETA(DisplayName = "CheckState"),
+	ResetState = 6 UMETA(DisplayName = "ResetState"),
+	SweepState = 7 UMETA(DisplayName = "SweepState")
 };
 
 /**
@@ -36,6 +37,7 @@ protected:
 	void CheckPinMovement();
 	void AnalyseState();
 	void EnablePinsPhysics();
+	void DisablePinsPhysicsForStandingPins();
 
 	// Variables
 	TArray<AActor*> BowlingPins;
@@ -46,9 +48,13 @@ public:
 	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite);
 	BowlingState BowlingState = BowlingState::NewGame;
 
+	UFUNCTION(BlueprintCallable)
 	void ChangeState(uint8 BowlingStateIndex);
 
 	// State events
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void NewGame();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void ReadyToBowl();

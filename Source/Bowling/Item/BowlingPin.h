@@ -32,8 +32,6 @@ protected:
 
 	void HidePin();
 	void ShowPin();
-	void DisableCollisions();
-
 	void CheckIfPinFellOffEdge();
 
 public:
@@ -46,5 +44,7 @@ public:
 	bool IsStanding();
 	bool DidFallOffEdge();
 	void ResetPin();
-	void EnableCollisions();
+	void EnableCollisionsAndPhysics();
+	void DisableCollisionsAndPhysics();
+	AActor* Parent;
 };

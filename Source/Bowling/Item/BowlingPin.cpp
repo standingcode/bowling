@@ -11,6 +11,8 @@ ABowlingPin::ABowlingPin()
 
 void ABowlingPin::BeginPlay()
 {
+	Parent = GetAttachParentActor();
+
 	Super::BeginPlay();
 	OriginalPosition = GetActorLocation();
 	OriginalRotation = GetActorRotation();
@@ -27,7 +29,7 @@ void ABowlingPin::Tick(float DeltaTime)
 
 void ABowlingPin::ResetPin()
 {
-	DisableCollisions();
+	DisableCollisionsAndPhysics();
 	ResetToOriginalPositionAndRotation();
 	//HidePin();
 
@@ -79,13 +81,14 @@ void ABowlingPin::ShowPin()
 	SetActorHiddenInGame(false);
 }
 
-void ABowlingPin::DisableCollisions()
+void ABowlingPin::DisableCollisionsAndPhysics()
 {
 	Mesh->SetSimulatePhysics(false);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AttachToActor(Parent, FAttachmentTransformRules::KeepWorldTransform);
 }
 
-void ABowlingPin::EnableCollisions()
+void ABowlingPin::EnableCollisionsAndPhysics()
 {
 	Mesh->SetSimulatePhysics(true);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);

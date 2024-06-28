@@ -100,7 +100,7 @@ void ABowlingPlayer::CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge
 void ABowlingPlayer::ReportBallOffEdgeOrStoppedMoving()
 {
 	DisableCollisions();
-	GameMode->ChangeState(static_cast<uint8>(BowlingState::CheckState));
+	GameMode->ChangeState(static_cast<uint8>(BowlingState::CheckPinsHaveStoppedMoving));
 }
 
 void ABowlingPlayer::Reset()

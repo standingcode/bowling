@@ -7,10 +7,13 @@
 
 void ABowlingGameModeBase::BeginPlay()
 {
+	Super::BeginPlay();
+
 	// Get all of the bowling pins into the array
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABowlingPin::StaticClass(), BowlingPins);
 
-	Super::BeginPlay();
+	// Launch new game
+	ChangeState(static_cast<uint8>(BowlingState::NewGame));
 }
 
 void ABowlingGameModeBase::Tick(float DeltaTime)
@@ -35,7 +38,7 @@ void ABowlingGameModeBase::ShowResultsOfBowl()
 
 void ABowlingGameModeBase::CheckPinMovement()
 {
-	if (!(BowlingState == BowlingState::CheckState) || PinsBeingChecked) { return; }
+	if (!(BowlingState == BowlingState::CheckPinsHaveStoppedMoving) || PinsBeingChecked) { return; }
 
 	PinsBeingChecked = true;
 
@@ -68,7 +71,23 @@ void ABowlingGameModeBase::EnablePinsPhysics()
 	{
 		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
 
-		BowlingPin->EnableCollisions();
+		if (!BowlingPin->DidFallOffEdge())
+		{
+			BowlingPin->EnableCollisionsAndPhysics();
+		}
+	}
+}
+
+void ABowlingGameModeBase::DisablePinsPhysicsForStandingPins()
+{
+	for (int32 i = 0; i < BowlingPins.Num(); i++)
+	{
+		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
+
+		if (BowlingPin->IsStanding())
+		{
+			BowlingPin->DisableCollisionsAndPhysics();
+		}
 	}
 }
 
@@ -78,37 +97,65 @@ void ABowlingGameModeBase::EnablePinsPhysics()
 void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 {
 	enum BowlingState NewState = static_cast<enum BowlingState>(BowlingStateIndex);
+
+	// Change the checkable state here
 	BowlingState = NewState;
 
 	switch (NewState)
 	{
 	case BowlingState::NewGame:
-		// This might be implemented later
+		GEngine->AddOnScreenDebugMessage(
+			-1, 5.0f, FColor::White, FString::Printf(TEXT("New game")));
+		NewGame();
 		break;
 	case BowlingState::ReadyToBowl:
-		EnablePinsPhysics();
+		GEngine->AddOnScreenDebugMessage(
+			-1, 5.0f, FColor::White, FString::Printf(TEXT("Ready to bowl")));
+		ReadyToBowl();
 		break;
 	case BowlingState::PlayerHasLaunchedBall:
+		GEngine->AddOnScreenDebugMessage(
+			-1, 5.0f, FColor::White, FString::Printf(TEXT("Player has launched ball")));
+		PlayerHasLaunchedBall();
 		break;
 	case BowlingState::BallInMotion:
+		GEngine->AddOnScreenDebugMessage(
+			-1, 5.0f, FColor::White, FString::Printf(TEXT("Ball in motion")));
+		BallInMotion();
+		break;
+	case BowlingState::CheckPinsHaveStoppedMoving:
+		GEngine->AddOnScreenDebugMessage(
+			-1, 5.0f, FColor::White, FString::Printf(TEXT("Check pins have stopped moving")));
+		CheckPinsHaveStoppedMoving();
 		break;
 	case BowlingState::CheckState:
-		ChangeState(static_cast<uint8>(BowlingState::SweepState));
+		GEngine->AddOnScreenDebugMessage(
+			-1, 5.0f, FColor::White, FString::Printf(TEXT("Check state")));
+		CheckState();
 		break;
 	case BowlingState::SweepState:
+		GEngine->AddOnScreenDebugMessage(
+			-1, 5.0f, FColor::White, FString::Printf(TEXT("Sweep state")));
 		SweepState();
 		break;
 	case BowlingState::ResetState:
+		GEngine->AddOnScreenDebugMessage(
+			-1, 5.0f, FColor::White, FString::Printf(TEXT("Sweep state")));
+		ResetState();
 		break;
-
 	default:
 		break;
 	}
 }
 
+void ABowlingGameModeBase::NewGame_Implementation()
+{
+
+}
+
 void ABowlingGameModeBase::ReadyToBowl_Implementation()
 {
-	ChangeState(static_cast<uint8>(BowlingState::ReadyToBowl));
+	EnablePinsPhysics();
 }
 
 void ABowlingGameModeBase::PlayerHasLaunchedBall_Implementation()
@@ -128,11 +175,13 @@ void ABowlingGameModeBase::CheckPinsHaveStoppedMoving_Implementation()
 
 void ABowlingGameModeBase::CheckState_Implementation()
 {
-
+	ChangeState(static_cast<uint8>(BowlingState::SweepState));
 }
 
 void ABowlingGameModeBase::SweepState_Implementation()
 {
+	// Disable pin physics for the pins that need to remain standing
+	DisablePinsPhysicsForStandingPins();
 
 }
 
