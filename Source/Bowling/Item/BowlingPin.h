@@ -28,7 +28,6 @@ protected:
 
 	// Functions
 
-	ABowlingPin();
 	virtual void BeginPlay() override;
 	void Tick(float DeltaTime);
 
