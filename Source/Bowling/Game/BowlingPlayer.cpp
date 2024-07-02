@@ -55,6 +55,8 @@ void ABowlingPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ABowlingPlayer::MoveLeftAndRight(float Value)
 {
+	if (!(GameMode->BowlingState == BowlingState::ReadyToBowl)) { return; }
+
 	// Move the player left and right
 	FVector NewLocation = GetActorLocation();
 	NewLocation.Y += Value * SidewaysSpeed;
