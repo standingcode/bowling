@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "BowlingWidget.h"
 #include "BowlingGameModeBase.generated.h"
+
 
 UENUM(BlueprintType)
 enum class BowlingState : uint8
@@ -42,6 +44,12 @@ protected:
 	// Variables
 	TArray<AActor*> BowlingPins;
 	bool PinsBeingChecked = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<class UUserWidget> GameWidgetClass;
+
+	UPROPERTY()
+	UBowlingWidget* GameWidget;
 
 public:
 

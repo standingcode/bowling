@@ -4,6 +4,7 @@
 #include "BowlingGameModeBase.h"
 #include "Kismet\GameplayStatics.h"
 #include "Bowling\Item\BowlingPin.h"
+#include "BowlingWidget.h"
 
 void ABowlingGameModeBase::BeginPlay()
 {
@@ -11,6 +12,18 @@ void ABowlingGameModeBase::BeginPlay()
 
 	// Get all of the bowling pins into the array
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABowlingPin::StaticClass(), BowlingPins);
+
+	// Create Widget
+	if (GameWidgetClass)
+	{
+		GameWidget = Cast<UBowlingWidget>(CreateWidget(GetWorld(), GameWidgetClass));
+
+		if (GameWidget)
+		{
+			GameWidget->AddToViewport();
+			/*UpdateItemText();*/
+		}
+	}
 
 	// Launch new game
 	ChangeState(static_cast<uint8>(BowlingState::NewGame));
