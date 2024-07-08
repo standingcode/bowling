@@ -10,11 +10,12 @@
 class BOWLING_API BowlingPlayer
 {
 private:
-	FString Name;
+	FString PlayerName;
 public:
-	BowlingPlayer();
+	BowlingPlayer(FString Name);
 	~BowlingPlayer();
 
 	// Variables
-	void SetName(FString name);
+	void SetName(FString Name);
+	FString GetName();
 };

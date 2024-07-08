@@ -3,15 +3,21 @@
 
 #include "BowlingPlayer.h"
 
-BowlingPlayer::BowlingPlayer()
+BowlingPlayer::BowlingPlayer(FString Name)
 {
+	SetName(Name);
 }
 
 BowlingPlayer::~BowlingPlayer()
 {
 }
 
-void BowlingPlayer::SetName(FString name)
+void BowlingPlayer::SetName(FString Name)
 {
-	Name = name;
+	PlayerName = Name;
+}
+
+FString BowlingPlayer::GetName()
+{
+	return PlayerName;
 }

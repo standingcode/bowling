@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "BowlingWidget.h"
 #include "BowlingScorerComponent.h"
+#include "BowlingPlayer.h"
 #include "BowlingGameModeBase.generated.h"
 
 
@@ -44,6 +45,8 @@ protected:
 
 	// Variables
 	TArray<AActor*> BowlingPins;
+	TArray<BowlingPlayer*> Players;
+
 	bool PinsBeingChecked = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")

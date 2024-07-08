@@ -30,6 +30,23 @@ void ABowlingGameModeBase::BeginPlay()
 		}
 	}
 
+	// Add players 	
+
+	for (int32 i = 0; i < NumberOfPlayers; i++)
+	{
+		Players.Add(new BowlingPlayer(FString::Printf(TEXT("Player %i"), i + 1)));
+	}
+
+	for (int32 i = 0; i < NumberOfPlayers; i++)
+	{
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			5.0f,
+			FColor::White,
+			FString::Printf(TEXT("Player name is: %s"), *Players[i]->GetName()));
+	}
+
+
 	// Launch new game
 	ChangeState(static_cast<uint8>(BowlingState::NewGame));
 }
