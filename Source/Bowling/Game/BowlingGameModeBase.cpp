@@ -13,6 +13,11 @@ void ABowlingGameModeBase::BeginPlay()
 	// Get all of the bowling pins into the array
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABowlingPin::StaticClass(), BowlingPins);
 
+	// Instantiate a new instance of bowling scorer object
+	BowlingScorerComponent = NewObject<UBowlingScorerComponent>(this, TEXT("BowlingScorerComponent"));
+
+	//BowlingScorerComponent->RegisterComponent();
+
 	// Create Widget
 	if (GameWidgetClass)
 	{
@@ -74,8 +79,10 @@ void ABowlingGameModeBase::CheckPinMovement()
 	ChangeState(static_cast<uint8>(BowlingState::CheckState));
 }
 
-void ABowlingGameModeBase::AnalyseState()
+void ABowlingGameModeBase::AnalyseScoreAndNextState()
 {
+	ShowResultsOfBowl();
+	ChangeState(static_cast<uint8>(BowlingState::SweepState));
 }
 
 void ABowlingGameModeBase::EnablePinsPhysics()
@@ -161,6 +168,11 @@ void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 	}
 }
 
+void ABowlingGameModeBase::NextPlayer()
+{
+
+}
+
 void ABowlingGameModeBase::NewGame_Implementation()
 {
 
@@ -188,7 +200,7 @@ void ABowlingGameModeBase::CheckPinsHaveStoppedMoving_Implementation()
 
 void ABowlingGameModeBase::CheckState_Implementation()
 {
-	ChangeState(static_cast<uint8>(BowlingState::SweepState));
+	AnalyseScoreAndNextState();
 }
 
 void ABowlingGameModeBase::SweepState_Implementation()

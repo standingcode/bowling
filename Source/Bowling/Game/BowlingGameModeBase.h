@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "BowlingWidget.h"
+#include "BowlingScorerComponent.h"
 #include "BowlingGameModeBase.generated.h"
 
 
@@ -17,8 +18,8 @@ enum class BowlingState : uint8
 	BallInMotion = 3 UMETA(DisplayName = "BallInMotion"),
 	CheckPinsHaveStoppedMoving = 4 UMETA(DisplayName = "Check pins have stopped moving"),
 	CheckState = 5 UMETA(DisplayName = "CheckState"),
-	ResetState = 6 UMETA(DisplayName = "ResetState"),
-	SweepState = 7 UMETA(DisplayName = "SweepState")
+	SweepState = 7 UMETA(DisplayName = "SweepState"),
+	ResetState = 6 UMETA(DisplayName = "ResetState")
 };
 
 /**
@@ -37,7 +38,7 @@ protected:
 
 	void ShowResultsOfBowl();
 	void CheckPinMovement();
-	void AnalyseState();
+	void AnalyseScoreAndNextState();
 	void EnablePinsPhysics();
 	void DisablePinsPhysicsForStandingPins();
 
@@ -51,9 +52,17 @@ protected:
 	UPROPERTY()
 	UBowlingWidget* GameWidget;
 
+	UPROPERTY()
+	UBowlingScorerComponent* BowlingScorerComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int NumberOfPlayers = 1;
+
+	UFUNCTION()
+	void NextPlayer();
+
 public:
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite);
 	BowlingState BowlingState = BowlingState::NewGame;
 
 	UFUNCTION(BlueprintCallable)
