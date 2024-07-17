@@ -18,8 +18,8 @@ ABowlingBall::ABowlingBall()
 	// Set the Root Component to be our Mesh
 	RootComponent = Mesh;
 
-	// Set physics to true
-	Mesh->SetSimulatePhysics(true);
+	//// Set physics to false at the start
+	//Mesh->SetSimulatePhysics(false);
 }
 
 // Called when the game starts or when spawned
@@ -28,7 +28,9 @@ void ABowlingBall::BeginPlay()
 	Super::BeginPlay();
 
 	// Account for mass in the bowling force
+	Mesh->SetSimulatePhysics(true);
 	BowlingForce *= Mesh->GetMass();
+	Mesh->SetSimulatePhysics(false);
 
 	// Reference to the GameModeBase script
 	GameMode = Cast<ABowlingGameModeBase>(GetWorld()->GetAuthGameMode());
@@ -55,17 +57,28 @@ void ABowlingBall::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void ABowlingBall::MoveLeftAndRight(float Value)
 {
-	if (GameMode->BowlingState == BowlingState::BallInMotion || GameMode->BowlingState == BowlingState::PlayerHasLaunchedBall) { return; }
+	if (
+		GameMode->BowlingState == BowlingState::BallInMotion
+		|| GameMode->BowlingState == BowlingState::PlayerHasLaunchedBall
+		)
+	{
+		return;
+	}
 
 	// Move the player left and right
 	FVector NewLocation = GetActorLocation();
 	NewLocation.Y += Value * SidewaysSpeed;
+
+	NewLocation.Y = FMath::Clamp(NewLocation.Y, -MoveLeftAndRightLimit, MoveLeftAndRightLimit);
+
 	SetActorLocation(NewLocation);
 }
 
 void ABowlingBall::Bowl()
 {
 	if (!(GameMode->BowlingState == BowlingState::ReadyToBowl)) { return; }
+
+	Mesh->SetSimulatePhysics(true);
 
 	GameMode->ChangeState(static_cast<uint8>(BowlingState::PlayerHasLaunchedBall));
 	//GEngine->AddOnScreenDebugMessage(-3, 0.5f, FColor::White, FString::Printf(TEXT("Got here and power is: %f"), BowlingForce));
@@ -103,6 +116,7 @@ void ABowlingBall::ReportBallOffEdgeOrStoppedMoving()
 {
 	DisableCollisions();
 	GameMode->ChangeState(static_cast<uint8>(BowlingState::CheckPinsHaveStoppedMoving));
+	Mesh->SetSimulatePhysics(false);
 }
 
 void ABowlingBall::Reset()

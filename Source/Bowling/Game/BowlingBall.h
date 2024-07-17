@@ -32,6 +32,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float SidewaysSpeed = 1.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float BowlingForce = 10.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) float MoveLeftAndRightLimit = 72.0f;
+
 	bool BallIsInMotion = false;
 	bool BallWasInMotion = false;
 

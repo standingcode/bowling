@@ -11,6 +11,10 @@ class BOWLING_API BowlingPlayer
 {
 private:
 	FString PlayerName;
+
+	int Score;
+	TArray<int> FrameScores;
+
 public:
 	BowlingPlayer(FString Name);
 	~BowlingPlayer();
