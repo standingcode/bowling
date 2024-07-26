@@ -4,6 +4,7 @@
 #include "BowlingGameModeBase.h"
 #include "Kismet\GameplayStatics.h"
 #include "Bowling\Item\BowlingPin.h"
+#include "ScoringWidget.h"
 #include "BowlingWidget.h"
 
 void ABowlingGameModeBase::BeginPlay()
@@ -183,6 +184,15 @@ void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 	default:
 		break;
 	}
+}
+
+void ABowlingGameModeBase::AddPlayerScorecardWidgetToArray(UScoringWidget* ScoringWidget)
+{
+	if (ScoringWidget == nullptr) { return; }
+
+	ScoringWidgets.Add(ScoringWidget);
+	ScoringWidget->AddToViewport();
+	GameWidget->VerticalBoxForScorecardWidget->AddChildToVerticalBox(ScoringWidget);
 }
 
 void ABowlingGameModeBase::NextPlayer()

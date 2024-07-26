@@ -7,6 +7,7 @@
 #include "BowlingWidget.h"
 #include "BowlingScorerComponent.h"
 #include "BowlingPlayer.h"
+#include "ScoringWidget.h"
 #include "BowlingGameModeBase.generated.h"
 
 
@@ -45,15 +46,18 @@ protected:
 
 	// Variables
 	TArray<AActor*> BowlingPins;
+
 	TArray<BowlingPlayer*> Players;
 
 	bool PinsBeingChecked = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<class UUserWidget> GameWidgetClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")	TSubclassOf<class UUserWidget> GameWidgetClass;
 
-	UPROPERTY()
-	UBowlingWidget* GameWidget;
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")	TSubclassOf<class UUserWidget> AnotherOne;
+
+	UPROPERTY()	UBowlingWidget* GameWidget;
+
+	UPROPERTY()	TArray<UScoringWidget*> ScoringWidgets;
 
 	UPROPERTY()
 	UBowlingScorerComponent* BowlingScorerComponent;
@@ -70,6 +74,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeState(uint8 BowlingStateIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void AddPlayerScorecardWidgetToArray(UScoringWidget* ScoringWidget);
+
 
 	// State events
 

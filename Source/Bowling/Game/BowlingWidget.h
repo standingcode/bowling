@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components\CanvasPanel.h"
+#include "Components\VerticalBox.h"
 #include "BowlingWidget.generated.h"
 
 /**
@@ -14,4 +16,11 @@ class BOWLING_API UBowlingWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<UCanvasPanel> MainViewCanvasPanel;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<UVerticalBox> VerticalBoxForScorecardWidget;
 };
