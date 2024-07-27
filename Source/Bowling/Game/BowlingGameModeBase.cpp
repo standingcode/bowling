@@ -20,14 +20,13 @@ void ABowlingGameModeBase::BeginPlay()
 	//BowlingScorerComponent->RegisterComponent();
 
 	// Create Widget
-	if (GameWidgetClass)
+	if (BowlingWidgetClass)
 	{
-		GameWidget = Cast<UBowlingWidget>(CreateWidget(GetWorld(), GameWidgetClass));
+		BowlingWidget = Cast<UBowlingWidget>(CreateWidget(GetWorld(), BowlingWidgetClass));
 
-		if (GameWidget)
+		if (BowlingWidget)
 		{
-			GameWidget->AddToViewport();
-			/*UpdateItemText();*/
+			BowlingWidget->AddToViewport();
 		}
 	}
 
@@ -51,6 +50,21 @@ void ABowlingGameModeBase::BeginPlay()
 	// Launch new game
 	ChangeState(static_cast<uint8>(BowlingState::NewGame));
 }
+
+//void ABowlingGameModeBase::AddPlayerScorecardWidgetToArray(UScoringWidget* ScoringWidget)
+//{
+//	if (ScoringWidget == nullptr) { return; }
+//
+//	ScoringWidgets.Add(ScoringWidget);
+//	ScoringWidget->AddToViewport();
+//
+//	if (BowlingWidget)
+//	{
+//		BowlingWidget->VerticalBoxForScorecardWidget->AddChildToVerticalBox(ScoringWidget);
+//	}
+//}
+
+
 
 void ABowlingGameModeBase::Tick(float DeltaTime)
 {
@@ -186,15 +200,6 @@ void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 	}
 }
 
-void ABowlingGameModeBase::AddPlayerScorecardWidgetToArray(UScoringWidget* ScoringWidget)
-{
-	if (ScoringWidget == nullptr) { return; }
-
-	ScoringWidgets.Add(ScoringWidget);
-	ScoringWidget->AddToViewport();
-	GameWidget->VerticalBoxForScorecardWidget->AddChildToVerticalBox(ScoringWidget);
-}
-
 void ABowlingGameModeBase::NextPlayer()
 {
 
@@ -202,7 +207,7 @@ void ABowlingGameModeBase::NextPlayer()
 
 void ABowlingGameModeBase::NewGame_Implementation()
 {
-
+	BowlingWidget->ShowScorecards(Players);
 }
 
 void ABowlingGameModeBase::ReadyToBowl_Implementation()

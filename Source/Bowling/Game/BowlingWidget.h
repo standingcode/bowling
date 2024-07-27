@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components\CanvasPanel.h"
 #include "Components\VerticalBox.h"
+#include "BowlingPlayer.h"
 #include "BowlingWidget.generated.h"
 
 /**
@@ -18,9 +19,10 @@ class BOWLING_API UBowlingWidget : public UUserWidget
 
 public:
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UCanvasPanel> MainViewCanvasPanel;
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")	TSubclassOf<class UUserWidget> ScorecardWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UVerticalBox> VerticalBoxForScorecardWidget;
+
+	void ShowScorecards(TArray<BowlingPlayer*> players);
 };

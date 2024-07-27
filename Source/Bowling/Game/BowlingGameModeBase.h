@@ -50,12 +50,9 @@ protected:
 	TArray<BowlingPlayer*> Players;
 
 	bool PinsBeingChecked = false;
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")	TSubclassOf<class UUserWidget> BowlingWidgetClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")	TSubclassOf<class UUserWidget> GameWidgetClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")	TSubclassOf<class UUserWidget> AnotherOne;
-
-	UPROPERTY()	UBowlingWidget* GameWidget;
+	UPROPERTY()	UBowlingWidget* BowlingWidget;
 
 	UPROPERTY()	TArray<UScoringWidget*> ScoringWidgets;
 
@@ -75,8 +72,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ChangeState(uint8 BowlingStateIndex);
 
-	UFUNCTION(BlueprintCallable)
-	void AddPlayerScorecardWidgetToArray(UScoringWidget* ScoringWidget);
+	//UFUNCTION(BlueprintCallable)
+	//void AddPlayerScorecardWidgetToArray(UScoringWidget* ScoringWidget);
 
 
 	// State events
