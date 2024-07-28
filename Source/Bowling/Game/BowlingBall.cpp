@@ -31,6 +31,7 @@ void ABowlingBall::BeginPlay()
 	Mesh->SetSimulatePhysics(true);
 	BowlingForce *= Mesh->GetMass();
 	Mesh->SetSimulatePhysics(false);
+	InitialBallPosition = GetActorLocation();
 
 	// Reference to the GameModeBase script
 	GameMode = Cast<ABowlingGameModeBase>(GetWorld()->GetAuthGameMode());
@@ -78,11 +79,17 @@ void ABowlingBall::Bowl()
 {
 	if (!(GameMode->BowlingState == BowlingState::ReadyToBowl)) { return; }
 
-	Mesh->SetSimulatePhysics(true);
+	EnableCollisions();
 
 	GameMode->ChangeState(static_cast<uint8>(BowlingState::PlayerHasLaunchedBall));
 	//GEngine->AddOnScreenDebugMessage(-3, 0.5f, FColor::White, FString::Printf(TEXT("Got here and power is: %f"), BowlingForce));
 	Mesh->AddImpulse(FVector(BowlingForce, 0, 0));
+}
+
+void ABowlingBall::ResetBall()
+{
+	ResetBallPosition();
+	ShowBall();
 }
 
 void ABowlingBall::CheckCurrentBallSpeed(FVector Velocity)
@@ -109,7 +116,11 @@ void ABowlingBall::CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge(f
 {
 	if (!(GameMode->BowlingState == BowlingState::BallInMotion)) { return; }
 
-	if (ZPosition < 0.0f) { ReportBallOffEdgeOrStoppedMoving(); }
+	if (ZPosition < 1.0f)
+	{
+		HideBall();
+		ReportBallOffEdgeOrStoppedMoving();
+	}
 }
 
 void ABowlingBall::ReportBallOffEdgeOrStoppedMoving()
@@ -119,9 +130,9 @@ void ABowlingBall::ReportBallOffEdgeOrStoppedMoving()
 	Mesh->SetSimulatePhysics(false);
 }
 
-void ABowlingBall::Reset()
+void ABowlingBall::ResetBallPosition()
 {
-	GameMode->Reset();
+	SetActorLocation(InitialBallPosition);
 }
 
 void ABowlingBall::ShowBall()

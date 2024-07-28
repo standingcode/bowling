@@ -20,20 +20,19 @@ void ABowlingGameModeBase::BeginPlay()
 	//BowlingScorerComponent->RegisterComponent();	
 
 	// Add players 	
-
 	for (int32 i = 0; i < NumberOfPlayers; i++)
 	{
 		Players.Add(new BowlingPlayer(FString::Printf(TEXT("Player %i"), i + 1)));
 	}
 
-	for (int32 i = 0; i < NumberOfPlayers; i++)
+	/*for (int32 i = 0; i < NumberOfPlayers; i++)
 	{
 		GEngine->AddOnScreenDebugMessage(
 			-1,
 			5.0f,
 			FColor::White,
 			FString::Printf(TEXT("Player name is: %s"), *Players[i]->GetName()));
-	}
+	}*/
 
 
 	// Launch new game
@@ -117,6 +116,11 @@ void ABowlingGameModeBase::DisablePinsPhysicsForStandingPins()
 	}
 }
 
+void ABowlingGameModeBase::NextPlayer()
+{
+
+}
+
 // State stuff
 
 void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
@@ -173,16 +177,14 @@ void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 	}
 }
 
-void ABowlingGameModeBase::NextPlayer()
-{
-
-}
-
 void ABowlingGameModeBase::NewGame_Implementation()
 {
 	if (BowlingWidget)
 	{
-		BowlingWidget->ShowScorecards(Players);
+		TArray <BowlingPlayer*> PlayersToShow;
+		PlayersToShow.Add(Players[0]);
+
+		BowlingWidget->ShowScorecards(PlayersToShow);
 	}
 }
 

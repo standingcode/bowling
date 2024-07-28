@@ -41,6 +41,9 @@ protected:
 
 private:
 
+	// Variables
+	FVector InitialBallPosition;
+
 	// Functions
 	void MoveLeftAndRight(float Value);
 	void Bowl();
@@ -51,18 +54,20 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge(float ZPosition);
 
-	void Reset();
-
-	void HideBall();
-	void ShowBall();
 	void DisableCollisions();
 	void EnableCollisions();
 
 	void ReportBallOffEdgeOrStoppedMoving();
+
+	void ResetBallPosition();
+	void HideBall();
+	void ShowBall();
 
 public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable)
+	void ResetBall();
 };
