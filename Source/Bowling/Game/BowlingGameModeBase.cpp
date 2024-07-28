@@ -17,18 +17,7 @@ void ABowlingGameModeBase::BeginPlay()
 	// Instantiate a new instance of bowling scorer object
 	BowlingScorerComponent = NewObject<UBowlingScorerComponent>(this, TEXT("BowlingScorerComponent"));
 
-	//BowlingScorerComponent->RegisterComponent();
-
-	// Create Widget
-	if (BowlingWidgetClass)
-	{
-		BowlingWidget = Cast<UBowlingWidget>(CreateWidget(GetWorld(), BowlingWidgetClass));
-
-		if (BowlingWidget)
-		{
-			BowlingWidget->AddToViewport();
-		}
-	}
+	//BowlingScorerComponent->RegisterComponent();	
 
 	// Add players 	
 
@@ -50,21 +39,6 @@ void ABowlingGameModeBase::BeginPlay()
 	// Launch new game
 	ChangeState(static_cast<uint8>(BowlingState::NewGame));
 }
-
-//void ABowlingGameModeBase::AddPlayerScorecardWidgetToArray(UScoringWidget* ScoringWidget)
-//{
-//	if (ScoringWidget == nullptr) { return; }
-//
-//	ScoringWidgets.Add(ScoringWidget);
-//	ScoringWidget->AddToViewport();
-//
-//	if (BowlingWidget)
-//	{
-//		BowlingWidget->VerticalBoxForScorecardWidget->AddChildToVerticalBox(ScoringWidget);
-//	}
-//}
-
-
 
 void ABowlingGameModeBase::Tick(float DeltaTime)
 {
@@ -143,7 +117,6 @@ void ABowlingGameModeBase::DisablePinsPhysicsForStandingPins()
 	}
 }
 
-
 // State stuff
 
 void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
@@ -207,7 +180,10 @@ void ABowlingGameModeBase::NextPlayer()
 
 void ABowlingGameModeBase::NewGame_Implementation()
 {
-	BowlingWidget->ShowScorecards(Players);
+	if (BowlingWidget)
+	{
+		BowlingWidget->ShowScorecards(Players);
+	}
 }
 
 void ABowlingGameModeBase::ReadyToBowl_Implementation()

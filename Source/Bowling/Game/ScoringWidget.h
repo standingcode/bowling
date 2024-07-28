@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components\TextBlock.h"
-#include "BowlingWidget.h"
 #include "ScoringWidget.generated.h"
 
 /**

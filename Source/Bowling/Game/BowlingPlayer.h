@@ -22,4 +22,5 @@ public:
 	// Variables
 	void SetName(FString Name);
 	FString GetName();
+
 };

@@ -4,16 +4,23 @@
 #include "BowlingWidget.h"
 #include "BowlingPlayer.h"
 #include "ScoringWidget.h"
+#include "Blueprint/WidgetTree.h"
+
+
+void UBowlingWidget::CreateScoringWidget_Implementation(int32 NumberOfScorecards)
+{
+}
 
 void UBowlingWidget::ShowScorecards(TArray<BowlingPlayer*> players)
 {
-	if (VerticalBoxForScorecardWidget == nullptr) { return; }
+	if (!IsValid(VerticalBoxForScorecardWidget)) { return; }
+
+
+	CreateScoringWidget(players.Num());
 
 	for (int32 i = 0; i < players.Num(); i++)
 	{
-		UScoringWidget* ScoringWidget = CreateWidget<UScoringWidget>(GetWorld(), ScorecardWidgetClass);
-		//ScoringWidget->SetPlayer(players[i]);
-		VerticalBoxForScorecardWidget->AddChild(ScoringWidget);
+		VerticalBoxForScorecardWidget->AddChildToVerticalBox(ScoringWidgets[i]);
+		ScoringWidgets[i]->SetNameText(players[i]->GetName());
 	}
-
 }
