@@ -60,6 +60,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int NumberOfPlayers = 1;
 
+	BowlingPlayer* CurrentPlayer;
+
+
 	UFUNCTION()
 	void NextPlayer();
 

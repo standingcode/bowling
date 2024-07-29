@@ -81,6 +81,7 @@ void ABowlingGameModeBase::CheckPinMovement()
 		}
 	}
 
+	PinsBeingChecked = false;
 	ChangeState(static_cast<uint8>(BowlingState::CheckState));
 }
 
