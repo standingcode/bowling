@@ -25,4 +25,7 @@ public:
 	void SetNameText(FString text);
 
 	virtual void NativeConstruct() override;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<UTextBlock> bowl_score_0;
 };

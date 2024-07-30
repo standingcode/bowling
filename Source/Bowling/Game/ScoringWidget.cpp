@@ -29,6 +29,7 @@ void UScoringWidget::NativeConstruct()
 	// Bind the PlayerNameText
 	PlayerNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("PlayerNameText")));
 
-	// Set the default values for the properties
-	SetNameText(TEXT("By golly it works!"));
+	bowl_score_0 = Cast<UTextBlock>(GetWidgetFromName(TEXT("bowl_score_0")));
+
+	bowl_score_0->SetText(FText::FromString(TEXT("99")));
 }
