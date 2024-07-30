@@ -13,7 +13,7 @@ private:
 	FString PlayerName;
 
 	int Score;
-	//TArray<BowlingScore> FrameScores;
+	TArray<class BowlingScore*> FrameScores;
 
 public:
 	BowlingPlayer(FString Name);
@@ -25,15 +25,15 @@ public:
 
 };
 
-//// First bowl should be -1 for a strike, 0 for a miss, 1-9 for the number of pins knocked down
-//class BOWLING_API BowlingScore
-//{
-//	int FirstBowl = -2;
-//	int SecondBowl = -2;
-//	int ThirdBowl = -2;
-//
-//	bool WasAStrike = FirstBowl == 10;
-//	bool WasASpare = FirstBowl + SecondBowl == 10;
-//
-//	int TotalScore = 0;
-//};
+// First bowl should be -1 for a strike, 0 for a miss, 1-9 for the number of pins knocked down
+class BOWLING_API BowlingScore
+{
+	int FirstBowl = -2;
+	int SecondBowl = -2;
+	int ThirdBowl = -2;
+
+	bool WasAStrike = FirstBowl == 10;
+	bool WasASpare = FirstBowl + SecondBowl == 10;
+
+	int TotalScore = 0;
+};
