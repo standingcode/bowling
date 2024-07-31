@@ -21,6 +21,7 @@ void UBowlingWidget::ShowScorecards(TArray<BowlingPlayer*> players)
 	for (int32 i = 0; i < players.Num(); i++)
 	{
 		VerticalBoxForScorecardWidget->AddChildToVerticalBox(ScoringWidgets[i]);
-		ScoringWidgets[i]->SetNameText(players[i]->GetName());
+		//ScoringWidgets[i]->SetNameText(players[i]->GetName());
+		ScoringWidgets[i]->SetScorecardData(players[i]);
 	}
 }

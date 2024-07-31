@@ -18,7 +18,7 @@ class BOWLING_API UBowlingWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-public:
+protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UVerticalBox> VerticalBoxForScorecardWidget;
@@ -29,6 +29,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void CreateScoringWidget(int32 NumberOfScorecards);
 
+public:
 
 	void ShowScorecards(TArray<BowlingPlayer*> players);
 };
