@@ -44,6 +44,8 @@ protected:
 	void EnablePinsPhysics();
 	void DisablePinsPhysicsForStandingPins();
 	void ShowCurrentPlayerScorecard();
+	int32 GetNumberOfPinsDown();
+	void ResetAllPins();
 
 	// Variables
 	TArray<AActor*> BowlingPins;

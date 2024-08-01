@@ -31,7 +31,7 @@ void UScoringWidget::SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, i
 	{
 		BowlScores[FrameIndex * 2]->SetText(FText::FromString("—"));
 	}
-	else
+	else if (Bowl1 != -1)
 	{
 		BowlScores[FrameIndex * 2]->SetText(FText::FromString(FString::FromInt(Bowl1)));
 	}
@@ -40,9 +40,9 @@ void UScoringWidget::SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, i
 	{
 		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("—"));
 	}
-	else
+	else if (Bowl2 != -1)
 	{
-		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString(FString::FromInt(Bowl1)));
+		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString(FString::FromInt(Bowl2)));
 	}
 
 	if (FrameTotal != -1)
@@ -86,18 +86,15 @@ void UScoringWidget::SetScorecardData(BowlingPlayer* BowlingPLayer)
 {
 	SetNameText(BowlingPLayer->GetName());
 
-	TArray<BowlingFrameScore*> FrameScores = BowlingPLayer->GetAllFrameScores();
+	TArray<BowlingFrameScore*>* FrameScores = BowlingPLayer->GetAllFrameScores();
 
-	for (int32 i = 0; i < FrameScores.Num(); i++)
+	for (int32 i = 0; i < FrameScores->Num(); i++)
 	{
-		if (FrameScores[i] != nullptr)
-		{
-			BowlingFrameScore* FrameScore = FrameScores[i];
+		BowlingFrameScore* FrameScore = (*FrameScores)[i];
 
-			if (FrameScore->FirstBowl == -1) { break; }
+		if (FrameScore->FirstBowl == -1) { break; }
 
-			SetFrameScore(i, FrameScore->FirstBowl, FrameScore->SecondBowl, FrameScore->TotalFrameScore);
-		}
+		SetFrameScore(i, FrameScore->FirstBowl, FrameScore->SecondBowl, FrameScore->TotalFrameScore);
 	}
 }
 

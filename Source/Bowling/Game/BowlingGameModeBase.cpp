@@ -58,44 +58,42 @@ void ABowlingGameModeBase::SaveScoresAndUpdateVisualScorecard()
 		);
 	}*/
 
-	int32 ScoreThisBowl = 0;
-
-	for (int32 i = 0; i < BowlingPins.Num(); i++)
-	{
-		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
-		if (!BowlingPin->IsStanding()) { ScoreThisBowl++; }
-	}
+	int32 NumberOfPinsDown = GetNumberOfPinsDown();
 
 	// Save the score
-	TArray<BowlingFrameScore*> FrameScores = Players[CurrentPlayer]->GetAllFrameScores();
+	TArray<BowlingFrameScore*>* FrameScores = Players[CurrentPlayer]->GetAllFrameScores();
 
-	for (int32 i = 0; i < FrameScores.Num(); i++)
+	if (FrameScores->Num() == 0 || FrameScores->Last()->SecondBowl != -1)
 	{
-		if (FrameScores[i] != nullptr)
-		{
-			BowlingFrameScore* FrameScore = FrameScores[i];
+		FrameScores->Add(new BowlingFrameScore());
+	}
 
-			if (FrameScore->SecondBowl != -1)
-			{
-				continue;
-			}
-
-			FrameScores[i]->SecondBowl = ScoreThisBowl;
-
-			NextPlayer();
-		}
-		else
-		{
-			FrameScores[i] = new BowlingFrameScore();
-
-			FrameScores[i]->SecondBowl = ScoreThisBowl;
-
-			if (ScoreThisBowl == 10) { NextPlayer(); }
-		}
+	if (FrameScores->Last()->FirstBowl == -1)
+	{
+		FrameScores->Last()->FirstBowl = NumberOfPinsDown;
+		if (NumberOfPinsDown == 10) { NextPlayer(); }
+	}
+	else
+	{
+		FrameScores->Last()->SecondBowl = NumberOfPinsDown - FrameScores->Last()->FirstBowl;
+		NextPlayer();
 	}
 
 	// Show current player scorecard
 	ShowCurrentPlayerScorecard();
+}
+
+int32 ABowlingGameModeBase::GetNumberOfPinsDown()
+{
+	int32 NumberOfPinsDown = 0;
+
+	for (int32 i = 0; i < BowlingPins.Num(); i++)
+	{
+		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
+		if (!BowlingPin->IsStanding()) { NumberOfPinsDown++; }
+	}
+
+	return NumberOfPinsDown;
 }
 
 void ABowlingGameModeBase::CheckPinMovement()
@@ -169,7 +167,14 @@ void ABowlingGameModeBase::ShowCurrentPlayerScorecard()
 
 void ABowlingGameModeBase::NextPlayer()
 {
+	// ResetPins
 
+	CurrentPlayer++;
+
+	if (CurrentPlayer >= NumberOfPlayers - 1)
+	{
+		CurrentPlayer = 0;
+	}
 }
 
 // State stuff
