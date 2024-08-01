@@ -15,6 +15,7 @@ void UBowlingWidget::ShowScorecards(TArray<BowlingPlayer*> players)
 {
 	if (!IsValid(VerticalBoxForScorecardWidget)) { return; }
 
+	VerticalBoxForScorecardWidget->ClearChildren();
 
 	CreateScoringWidget(players.Num());
 

@@ -12,19 +12,42 @@ void UScoringWidget::SetNameText(FString text)
 	}
 }
 
-void UScoringWidget::SetBowlScore(int32 BowlIndex, int32 Score)
+void UScoringWidget::SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, int32 FrameTotal)
 {
-	if (BowlScores.IsValidIndex(BowlIndex))
-	{
-		BowlScores[BowlIndex]->SetText(FText::FromString(FString::FromInt(Score)));
-	}
-}
+	if (!BowlScores.IsValidIndex(FrameIndex)) { return; }
 
-void UScoringWidget::SetRoundTotal(int32 BowlIndex, int32 Score)
-{
-	if (RoundTotals.IsValidIndex(BowlIndex))
+	if (Bowl1 == 10)
 	{
-		RoundTotals[BowlIndex]->SetText(FText::FromString(FString::FromInt(Score)));
+		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("X"));
+
+		if (FrameTotal != -1)
+		{
+			FrameTotals[FrameIndex]->SetText(FText::FromString(FString::FromInt(FrameTotal)));
+		}
+
+		return;
+	}
+	else if (Bowl1 == 0)
+	{
+		BowlScores[FrameIndex * 2]->SetText(FText::FromString("—"));
+	}
+	else
+	{
+		BowlScores[FrameIndex * 2]->SetText(FText::FromString(FString::FromInt(Bowl1)));
+	}
+
+	if (Bowl2 == 0)
+	{
+		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("—"));
+	}
+	else
+	{
+		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString(FString::FromInt(Bowl1)));
+	}
+
+	if (FrameTotal != -1)
+	{
+		FrameTotals[FrameIndex]->SetText(FText::FromString(FString::FromInt(FrameTotal)));
 	}
 }
 
@@ -54,7 +77,7 @@ void UScoringWidget::NativeConstruct()
 		UTextBlock* TempTextBlock = Cast<UTextBlock>(GetWidgetFromName(FName("round_total_" + FString::FromInt(i))));
 		if (TempTextBlock != nullptr)
 		{
-			RoundTotals.Add(TempTextBlock);
+			FrameTotals.Add(TempTextBlock);
 		}
 	}
 }
@@ -62,4 +85,36 @@ void UScoringWidget::NativeConstruct()
 void UScoringWidget::SetScorecardData(BowlingPlayer* BowlingPLayer)
 {
 	SetNameText(BowlingPLayer->GetName());
+
+	TArray<BowlingFrameScore*> FrameScores = BowlingPLayer->GetAllFrameScores();
+
+	for (int32 i = 0; i < FrameScores.Num(); i++)
+	{
+		if (FrameScores[i] != nullptr)
+		{
+			BowlingFrameScore* FrameScore = FrameScores[i];
+
+			if (FrameScore->FirstBowl == -1) { break; }
+
+			SetFrameScore(i, FrameScore->FirstBowl, FrameScore->SecondBowl, FrameScore->TotalFrameScore);
+		}
+	}
 }
+
+// If previous frame was a strike and we've completed the 2nd bowl of this frame we can fill the total for previous
+//if (FrameScores[i - 1]->WasAStrike && i != 0)
+//{
+//	SetFrameTotal(i - 1, 10 + FrameScore->FirstBowl + FrameScore->SecondBowl);
+//}
+
+//// If previous frame was a spare and we've completed the 1st bowl of this frame we can fill the total for previous
+//if (FrameScores[i - 1]->WasASpare && i != 0)
+//{
+//	SetFrameTotal(i - 1, 10 + FrameScore->FirstBowl);
+//}
+
+//// If the 2 scores are less than 10 we can fill the total for this frame now
+//if (FrameScore->FirstBowl + FrameScore->SecondBowl < 10)
+//{
+//	SetFrameTotal(i, FrameScore->FirstBowl + FrameScore->SecondBowl);
+//}

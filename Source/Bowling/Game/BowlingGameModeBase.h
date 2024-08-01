@@ -38,11 +38,12 @@ protected:
 	virtual void BeginPlay() override;
 	void Tick(float DeltaTime);
 
-	void ShowResultsOfBowl();
+	void SaveScoresAndUpdateVisualScorecard();
 	void CheckPinMovement();
 	void AnalyseScoreAndNextState();
 	void EnablePinsPhysics();
 	void DisablePinsPhysicsForStandingPins();
+	void ShowCurrentPlayerScorecard();
 
 	// Variables
 	TArray<AActor*> BowlingPins;
@@ -60,8 +61,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int NumberOfPlayers = 1;
 
-	BowlingPlayer* CurrentPlayer;
-
+	int32 CurrentPlayer = 0;
 
 	UFUNCTION()
 	void NextPlayer();

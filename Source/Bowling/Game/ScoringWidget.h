@@ -19,11 +19,8 @@ class BOWLING_API UScoringWidget : public UUserWidget
 protected:
 
 	void SetNameText(FString text);
-	void SetBowlScore(int32 BowlIndex, int32 Score);
-	void SetRoundTotal(int32 BowlIndex, int32 Score);
+	void SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, int32 FrameTotal);
 	void SetFinalScore(int32 Score);
-
-	// Some kind of set round score method?
 
 	// WIDGET REFERENCES
 
@@ -36,7 +33,7 @@ protected:
 
 	// Round totals
 	UPROPERTY(BlueprintReadWrite)
-	TArray<TObjectPtr<UTextBlock>> RoundTotals;
+	TArray<TObjectPtr<UTextBlock>> FrameTotals;
 
 	// Bowl scores
 

@@ -46,9 +46,9 @@ void ABowlingGameModeBase::Tick(float DeltaTime)
 	CheckPinMovement();
 }
 
-void ABowlingGameModeBase::ShowResultsOfBowl()
+void ABowlingGameModeBase::SaveScoresAndUpdateVisualScorecard()
 {
-	for (int32 i = 0; i < BowlingPins.Num(); i++)
+	/*for (int32 i = 0; i < BowlingPins.Num(); i++)
 	{
 		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
 		GEngine->AddOnScreenDebugMessage(i, 10.0f, FColor::White, FString::Printf(
@@ -56,7 +56,46 @@ void ABowlingGameModeBase::ShowResultsOfBowl()
 			BowlingPin->GetPinNumber(),
 			BowlingPin->IsStanding() ? TEXT("Standing") : TEXT("Down"))
 		);
+	}*/
+
+	int32 ScoreThisBowl = 0;
+
+	for (int32 i = 0; i < BowlingPins.Num(); i++)
+	{
+		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
+		if (!BowlingPin->IsStanding()) { ScoreThisBowl++; }
 	}
+
+	// Save the score
+	TArray<BowlingFrameScore*> FrameScores = Players[CurrentPlayer]->GetAllFrameScores();
+
+	for (int32 i = 0; i < FrameScores.Num(); i++)
+	{
+		if (FrameScores[i] != nullptr)
+		{
+			BowlingFrameScore* FrameScore = FrameScores[i];
+
+			if (FrameScore->SecondBowl != -1)
+			{
+				continue;
+			}
+
+			FrameScores[i]->SecondBowl = ScoreThisBowl;
+
+			NextPlayer();
+		}
+		else
+		{
+			FrameScores[i] = new BowlingFrameScore();
+
+			FrameScores[i]->SecondBowl = ScoreThisBowl;
+
+			if (ScoreThisBowl == 10) { NextPlayer(); }
+		}
+	}
+
+	// Show current player scorecard
+	ShowCurrentPlayerScorecard();
 }
 
 void ABowlingGameModeBase::CheckPinMovement()
@@ -87,7 +126,7 @@ void ABowlingGameModeBase::CheckPinMovement()
 
 void ABowlingGameModeBase::AnalyseScoreAndNextState()
 {
-	ShowResultsOfBowl();
+	SaveScoresAndUpdateVisualScorecard();
 	ChangeState(static_cast<uint8>(BowlingState::SweepState));
 }
 
@@ -114,6 +153,17 @@ void ABowlingGameModeBase::DisablePinsPhysicsForStandingPins()
 		{
 			BowlingPin->DisableCollisionsAndPhysics();
 		}
+	}
+}
+
+void ABowlingGameModeBase::ShowCurrentPlayerScorecard()
+{
+	if (BowlingWidget)
+	{
+		TArray <BowlingPlayer*> PlayersToShow;
+		PlayersToShow.Add(Players[CurrentPlayer]);
+
+		BowlingWidget->ShowScorecards(PlayersToShow);
 	}
 }
 
@@ -180,13 +230,7 @@ void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 
 void ABowlingGameModeBase::NewGame_Implementation()
 {
-	if (BowlingWidget)
-	{
-		TArray <BowlingPlayer*> PlayersToShow;
-		PlayersToShow.Add(Players[0]);
-
-		BowlingWidget->ShowScorecards(PlayersToShow);
-	}
+	ShowCurrentPlayerScorecard();
 }
 
 void ABowlingGameModeBase::ReadyToBowl_Implementation()

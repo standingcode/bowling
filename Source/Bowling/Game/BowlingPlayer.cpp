@@ -6,6 +6,8 @@
 BowlingPlayer::BowlingPlayer(FString Name)
 {
 	SetName(Name);
+
+	FrameScores.Init(nullptr, 10);
 }
 
 BowlingPlayer::~BowlingPlayer()
@@ -20,4 +22,9 @@ void BowlingPlayer::SetName(FString Name)
 FString BowlingPlayer::GetName()
 {
 	return PlayerName;
+}
+
+TArray<class BowlingFrameScore*> BowlingPlayer::GetAllFrameScores()
+{
+	return FrameScores;
 }
