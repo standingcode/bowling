@@ -29,7 +29,7 @@ void UScoringWidget::SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, i
 	}
 	else if (Bowl1 == 0)
 	{
-		BowlScores[FrameIndex * 2]->SetText(FText::FromString("—"));
+		BowlScores[FrameIndex * 2]->SetText(FText::FromString("-"));
 	}
 	else if (Bowl1 != -1)
 	{
@@ -38,11 +38,18 @@ void UScoringWidget::SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, i
 
 	if (Bowl2 == 0)
 	{
-		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("—"));
+		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("-"));
 	}
 	else if (Bowl2 != -1)
 	{
-		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString(FString::FromInt(Bowl2)));
+		if (Bowl1 + Bowl2 == 10)
+		{
+			BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("/"));
+		}
+		else
+		{
+			BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString(FString::FromInt(Bowl2)));
+		}
 	}
 
 	if (FrameTotal != -1)

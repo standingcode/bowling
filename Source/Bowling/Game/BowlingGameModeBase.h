@@ -17,11 +17,11 @@ enum class BowlingState : uint8
 	NewGame = 0 UMETA(DisplayName = "New game"),
 	ReadyToBowl = 1 UMETA(DisplayName = "Ready to bowl"),
 	PlayerHasLaunchedBall = 2 UMETA(DisplayName = "Player has launched ball"),
-	BallInMotion = 3 UMETA(DisplayName = "BallInMotion"),
+	BallInMotion = 3 UMETA(DisplayName = "Ball is in Motion"),
 	CheckPinsHaveStoppedMoving = 4 UMETA(DisplayName = "Check pins have stopped moving"),
-	CheckState = 5 UMETA(DisplayName = "CheckState"),
-	SweepState = 7 UMETA(DisplayName = "SweepState"),
-	ResetState = 6 UMETA(DisplayName = "ResetState")
+	AnalyseScore = 5 UMETA(DisplayName = "Analyse the score"),
+	Sweep = 7 UMETA(DisplayName = "Sweep the pins"),
+	DescendPins = 8 UMETA(DisplayName = "Descend the pins")
 };
 
 /**
@@ -53,6 +53,7 @@ protected:
 	TArray<BowlingPlayer*> Players;
 
 	bool PinsBeingChecked = false;
+	bool PlayerShouldChange = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBowlingWidget* BowlingWidget;
@@ -93,11 +94,14 @@ public:
 	void CheckPinsHaveStoppedMoving();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void CheckState();
+	void AnalyseScoreState();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SweepState();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void ResetState();
+	void CheckChangePlayerState();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void DescendPinsState();
 };

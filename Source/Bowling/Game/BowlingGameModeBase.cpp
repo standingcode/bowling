@@ -48,16 +48,6 @@ void ABowlingGameModeBase::Tick(float DeltaTime)
 
 void ABowlingGameModeBase::SaveScoresAndUpdateVisualScorecard()
 {
-	/*for (int32 i = 0; i < BowlingPins.Num(); i++)
-	{
-		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
-		GEngine->AddOnScreenDebugMessage(i, 10.0f, FColor::White, FString::Printf(
-			TEXT("Pin: %i is %s"),
-			BowlingPin->GetPinNumber(),
-			BowlingPin->IsStanding() ? TEXT("Standing") : TEXT("Down"))
-		);
-	}*/
-
 	int32 NumberOfPinsDown = GetNumberOfPinsDown();
 
 	// Save the score
@@ -71,12 +61,12 @@ void ABowlingGameModeBase::SaveScoresAndUpdateVisualScorecard()
 	if (FrameScores->Last()->FirstBowl == -1)
 	{
 		FrameScores->Last()->FirstBowl = NumberOfPinsDown;
-		if (NumberOfPinsDown == 10) { NextPlayer(); }
+		if (NumberOfPinsDown == 10) { PlayerShouldChange = true; }
 	}
 	else
 	{
 		FrameScores->Last()->SecondBowl = NumberOfPinsDown - FrameScores->Last()->FirstBowl;
-		NextPlayer();
+		PlayerShouldChange = true;
 	}
 
 	// Show current player scorecard
@@ -94,6 +84,16 @@ int32 ABowlingGameModeBase::GetNumberOfPinsDown()
 	}
 
 	return NumberOfPinsDown;
+}
+
+void ABowlingGameModeBase::ResetAllPins()
+{
+	// Reset all of the pins
+	for (int32 i = 0; i < BowlingPins.Num(); i++)
+	{
+		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
+		BowlingPin->ReadyPinForNewRound();
+	}
 }
 
 void ABowlingGameModeBase::CheckPinMovement()
@@ -119,13 +119,13 @@ void ABowlingGameModeBase::CheckPinMovement()
 	}
 
 	PinsBeingChecked = false;
-	ChangeState(static_cast<uint8>(BowlingState::CheckState));
+	ChangeState(static_cast<uint8>(BowlingState::AnalyseScore));
 }
 
 void ABowlingGameModeBase::AnalyseScoreAndNextState()
 {
 	SaveScoresAndUpdateVisualScorecard();
-	ChangeState(static_cast<uint8>(BowlingState::SweepState));
+	ChangeState(static_cast<uint8>(BowlingState::Sweep));
 }
 
 void ABowlingGameModeBase::EnablePinsPhysics()
@@ -171,10 +171,12 @@ void ABowlingGameModeBase::NextPlayer()
 
 	CurrentPlayer++;
 
-	if (CurrentPlayer >= NumberOfPlayers - 1)
+	if (CurrentPlayer > NumberOfPlayers - 1)
 	{
 		CurrentPlayer = 0;
 	}
+
+	ShowCurrentPlayerScorecard();
 }
 
 // State stuff
@@ -189,45 +191,36 @@ void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 	switch (NewState)
 	{
 	case BowlingState::NewGame:
-		GEngine->AddOnScreenDebugMessage(
-			-1, 5.0f, FColor::White, FString::Printf(TEXT("New game")));
 		NewGame();
 		break;
+
 	case BowlingState::ReadyToBowl:
-		GEngine->AddOnScreenDebugMessage(
-			-1, 5.0f, FColor::White, FString::Printf(TEXT("Ready to bowl")));
 		ReadyToBowl();
 		break;
+
 	case BowlingState::PlayerHasLaunchedBall:
-		GEngine->AddOnScreenDebugMessage(
-			-1, 5.0f, FColor::White, FString::Printf(TEXT("Player has launched ball")));
 		PlayerHasLaunchedBall();
 		break;
+
 	case BowlingState::BallInMotion:
-		GEngine->AddOnScreenDebugMessage(
-			-1, 5.0f, FColor::White, FString::Printf(TEXT("Ball in motion")));
 		BallInMotion();
 		break;
+
 	case BowlingState::CheckPinsHaveStoppedMoving:
-		GEngine->AddOnScreenDebugMessage(
-			-1, 5.0f, FColor::White, FString::Printf(TEXT("Check pins have stopped moving")));
 		CheckPinsHaveStoppedMoving();
 		break;
-	case BowlingState::CheckState:
-		GEngine->AddOnScreenDebugMessage(
-			-1, 5.0f, FColor::White, FString::Printf(TEXT("Check state")));
-		CheckState();
+
+	case BowlingState::AnalyseScore:
+		AnalyseScoreState();
 		break;
-	case BowlingState::SweepState:
-		GEngine->AddOnScreenDebugMessage(
-			-1, 5.0f, FColor::White, FString::Printf(TEXT("Sweep state")));
+
+	case BowlingState::Sweep:
 		SweepState();
 		break;
-	case BowlingState::ResetState:
-		GEngine->AddOnScreenDebugMessage(
-			-1, 5.0f, FColor::White, FString::Printf(TEXT("Sweep state")));
-		ResetState();
+	case BowlingState::DescendPins:
+		DescendPinsState();
 		break;
+
 	default:
 		break;
 	}
@@ -258,7 +251,7 @@ void ABowlingGameModeBase::CheckPinsHaveStoppedMoving_Implementation()
 
 }
 
-void ABowlingGameModeBase::CheckState_Implementation()
+void ABowlingGameModeBase::AnalyseScoreState_Implementation()
 {
 	AnalyseScoreAndNextState();
 }
@@ -270,7 +263,29 @@ void ABowlingGameModeBase::SweepState_Implementation()
 
 }
 
-void ABowlingGameModeBase::ResetState_Implementation()
+void ABowlingGameModeBase::CheckChangePlayerState_Implementation()
+{
+	// Can add a catch to check if any pins somehow got lost during the sweep here....
+
+	// If we should change to the next player, we need to reset the pins
+	if (PlayerShouldChange)
+	{
+		ResetAllPins();
+		NextPlayer();
+	}
+
+	PlayerShouldChange = false;
+	ChangeState(static_cast<uint8>(BowlingState::DescendPins));
+}
+
+void ABowlingGameModeBase::DescendPinsState_Implementation()
 {
 
+}
+
+// Debug stuff
+
+void Print(FString Message)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, Message);
 }

@@ -45,7 +45,8 @@ public:
 	int GetPinNumber();
 	bool IsStanding();
 	bool DidFallOffEdge();
-	void ResetPin();
+	void ResetPinToOriginalPositionAndHide();
+	void ReadyPinForNewRound();
 	void EnableCollisionsAndPhysics();
 	void DisableCollisionsAndPhysics();
 	AActor* Parent;

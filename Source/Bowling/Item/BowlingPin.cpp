@@ -22,11 +22,17 @@ void ABowlingPin::Tick(float DeltaTime)
 
 #pragma region Resetting
 
-void ABowlingPin::ResetPin()
+void ABowlingPin::ResetPinToOriginalPositionAndHide()
 {
 	DisableCollisionsAndPhysics();
 	ResetToOriginalPositionAndRotation();
 	HidePin();
+}
+
+void ABowlingPin::ReadyPinForNewRound()
+{
+	PinFellOffEdge = false;
+	ShowPin();
 }
 
 void ABowlingPin::ResetToOriginalPositionAndRotation()
@@ -61,7 +67,7 @@ void ABowlingPin::CheckIfPinFellOffEdge()
 	if (GetActorLocation().Z < 0.0f)
 	{
 		PinFellOffEdge = true;
-		ResetPin();
+		ResetPinToOriginalPositionAndHide();
 	}
 }
 
