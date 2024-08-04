@@ -58,9 +58,6 @@ void ABowlingGameModeBase::SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores
 {
 	int32 NumberOfPinsDown = GetNumberOfPinsDown();
 
-	// Save the bowling score
-
-
 	if (FrameScores->Num() == 0 || (FrameScores->Last()->SecondBowl != -1 || FrameScores->Last()->FirstBowl == 10))
 	{
 		FrameScores->Add(new BowlingFrameScore());
@@ -80,32 +77,66 @@ void ABowlingGameModeBase::SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores
 
 void ABowlingGameModeBase::UpdateTotalScore(TArray<BowlingFrameScore*>* FrameScores)
 {
-	// Work backwards through the array to update bonuses etc.
-
-
-
-	// If the score was less than 10, we can just add the two bowls together
-	if (FrameScores->Last()->FirstBowl + FrameScores->Last()->SecondBowl < 10)
-	{
-		FrameScores->Last()->TotalRunningScore = FrameScores->Last()->FirstBowl + FrameScores->Last()->SecondBowl;
-	}
-
 	// Loop through all and check for bonuses
 
 	for (int32 i = 0; i < FrameScores->Num(); i++)
 	{
 		if ((*FrameScores)[i]->TotalRunningScore != -1) { continue; }
 
-		// If it's a strike, check for 2 bowls in the frame ahead, if existing
-		if ((*FrameScores)[i]->FirstBowl == 10 && FrameScores->Num() > i + 1)
+		if ((*FrameScores)[i]->FirstBowl != 10 && (*FrameScores)[i]->SecondBowl == -1)
 		{
-			// If there was only a strike in this frame we also need to check if the next frame exists,
-			// in order to score the bonus
-			if ((*FrameScores)[i + 1]->FirstBowl == 10 && FrameScores->Num() > i + 2)
+			break;
+		}
+
+		int32 PreviousTotal = 0;
+
+		if (i != 0)
+		{
+			if ((*FrameScores)[i - 1]->TotalRunningScore != -1)
 			{
-				(*FrameScores)[i]->TotalRunningScore = FrameScores
+				PreviousTotal = (*FrameScores)[i - 1]->TotalRunningScore;
 			}
 		}
+
+		// If it's a strike, check for first bowl in the frame ahead, if existing
+		if ((*FrameScores)[i]->FirstBowl == 10)
+		{
+			// We have a strike in this frame but no existing next frame
+			if (FrameScores->Num() > i + 1)
+			{
+				// If there was a strike in the following frame we also need to check if the next next frame exists in order to score the bonus
+				if ((*FrameScores)[i + 1]->FirstBowl == 10)
+				{
+					if (FrameScores->Num() > i + 2)
+					{
+						(*FrameScores)[i]->TotalRunningScore = PreviousTotal + 10 + 10 + (*FrameScores)[i + 2]->FirstBowl;
+						continue;
+					}
+
+					break;
+				}
+
+				(*FrameScores)[i]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[i + 1]->FirstBowl
+					+ ((*FrameScores)[i]->SecondBowl == -1 ? 0 : (*FrameScores)[i]->SecondBowl);
+				continue;
+			}
+
+			break;
+		}
+		// If it's a spare need to check the first bowl in the frame ahead
+		else if ((*FrameScores)[i]->FirstBowl + (*FrameScores)[i]->SecondBowl == 10)
+		{
+			if (FrameScores->Num() > i + 1)
+			{
+				(*FrameScores)[i]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[i + 1]->FirstBowl;
+				continue;
+			}
+
+			break;
+		}
+
+		(*FrameScores)[i]->TotalRunningScore = PreviousTotal + (*FrameScores)[i]->FirstBowl
+			+ ((*FrameScores)[i]->SecondBowl == -1 ? 0 : (*FrameScores)[i]->SecondBowl);
 	}
 }
 
@@ -156,13 +187,6 @@ void ABowlingGameModeBase::CheckPinMovement()
 
 	PinsBeingChecked = false;
 	ChangeState(static_cast<uint8>(BowlingState::AnalyseScore));
-}
-
-void ABowlingGameModeBase::DetermineScore()
-{
-	SaveScores();
-	ShowCurrentPlayerScorecard();
-	ChangeState(static_cast<uint8>(BowlingState::Sweep));
 }
 
 void ABowlingGameModeBase::EnablePinsPhysics()
@@ -290,7 +314,9 @@ void ABowlingGameModeBase::CheckPinsHaveStoppedMoving_Implementation()
 
 void ABowlingGameModeBase::AnalyseScoreState_Implementation()
 {
-	DetermineScore();
+	SaveScores();
+	ShowCurrentPlayerScorecard();
+	ChangeState(static_cast<uint8>(BowlingState::Sweep));
 }
 
 void ABowlingGameModeBase::SweepState_Implementation()

@@ -40,7 +40,6 @@ protected:
 
 	void SaveScores();
 	void CheckPinMovement();
-	void DetermineScore();
 	void SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores);
 	void UpdateTotalScore(TArray<BowlingFrameScore*>* FrameScores);
 	void EnablePinsPhysics();
