@@ -33,5 +33,5 @@ public:
 	int32 SecondBowl = -1;
 	int32 ThirdBowl = -1;
 
-	int32 TotalFrameScore = -1;
+	int32 TotalRunningScore = -1;
 };

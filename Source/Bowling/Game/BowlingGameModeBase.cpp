@@ -46,12 +46,20 @@ void ABowlingGameModeBase::Tick(float DeltaTime)
 	CheckPinMovement();
 }
 
-void ABowlingGameModeBase::SaveScoresAndUpdateVisualScorecard()
+void ABowlingGameModeBase::SaveScores()
+{
+	TArray<BowlingFrameScore*>* FrameScores = Players[CurrentPlayer]->GetAllFrameScores();
+
+	SaveBowlScore(FrameScores);
+	UpdateTotalScore(FrameScores);
+}
+
+void ABowlingGameModeBase::SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores)
 {
 	int32 NumberOfPinsDown = GetNumberOfPinsDown();
 
-	// Save the score
-	TArray<BowlingFrameScore*>* FrameScores = Players[CurrentPlayer]->GetAllFrameScores();
+	// Save the bowling score
+
 
 	if (FrameScores->Num() == 0 || (FrameScores->Last()->SecondBowl != -1 || FrameScores->Last()->FirstBowl == 10))
 	{
@@ -68,9 +76,37 @@ void ABowlingGameModeBase::SaveScoresAndUpdateVisualScorecard()
 		FrameScores->Last()->SecondBowl = NumberOfPinsDown - FrameScores->Last()->FirstBowl;
 		PlayerShouldChange = true;
 	}
+}
 
-	// Show current player scorecard
-	ShowCurrentPlayerScorecard();
+void ABowlingGameModeBase::UpdateTotalScore(TArray<BowlingFrameScore*>* FrameScores)
+{
+	// Work backwards through the array to update bonuses etc.
+
+
+
+	// If the score was less than 10, we can just add the two bowls together
+	if (FrameScores->Last()->FirstBowl + FrameScores->Last()->SecondBowl < 10)
+	{
+		FrameScores->Last()->TotalRunningScore = FrameScores->Last()->FirstBowl + FrameScores->Last()->SecondBowl;
+	}
+
+	// Loop through all and check for bonuses
+
+	for (int32 i = 0; i < FrameScores->Num(); i++)
+	{
+		if ((*FrameScores)[i]->TotalRunningScore != -1) { continue; }
+
+		// If it's a strike, check for 2 bowls in the frame ahead, if existing
+		if ((*FrameScores)[i]->FirstBowl == 10 && FrameScores->Num() > i + 1)
+		{
+			// If there was only a strike in this frame we also need to check if the next frame exists,
+			// in order to score the bonus
+			if ((*FrameScores)[i + 1]->FirstBowl == 10 && FrameScores->Num() > i + 2)
+			{
+				(*FrameScores)[i]->TotalRunningScore = FrameScores
+			}
+		}
+	}
 }
 
 int32 ABowlingGameModeBase::GetNumberOfPinsDown()
@@ -122,9 +158,10 @@ void ABowlingGameModeBase::CheckPinMovement()
 	ChangeState(static_cast<uint8>(BowlingState::AnalyseScore));
 }
 
-void ABowlingGameModeBase::AnalyseScoreAndNextState()
+void ABowlingGameModeBase::DetermineScore()
 {
-	SaveScoresAndUpdateVisualScorecard();
+	SaveScores();
+	ShowCurrentPlayerScorecard();
 	ChangeState(static_cast<uint8>(BowlingState::Sweep));
 }
 
@@ -253,7 +290,7 @@ void ABowlingGameModeBase::CheckPinsHaveStoppedMoving_Implementation()
 
 void ABowlingGameModeBase::AnalyseScoreState_Implementation()
 {
-	AnalyseScoreAndNextState();
+	DetermineScore();
 }
 
 void ABowlingGameModeBase::SweepState_Implementation()

@@ -101,7 +101,7 @@ void UScoringWidget::SetScorecardData(BowlingPlayer* BowlingPLayer)
 
 		if (FrameScore->FirstBowl == -1) { break; }
 
-		SetFrameScore(i, FrameScore->FirstBowl, FrameScore->SecondBowl, FrameScore->TotalFrameScore);
+		SetFrameScore(i, FrameScore->FirstBowl, FrameScore->SecondBowl, FrameScore->TotalRunningScore);
 	}
 }
 

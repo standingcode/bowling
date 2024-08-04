@@ -38,9 +38,11 @@ protected:
 	virtual void BeginPlay() override;
 	void Tick(float DeltaTime);
 
-	void SaveScoresAndUpdateVisualScorecard();
+	void SaveScores();
 	void CheckPinMovement();
-	void AnalyseScoreAndNextState();
+	void DetermineScore();
+	void SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores);
+	void UpdateTotalScore(TArray<BowlingFrameScore*>* FrameScores);
 	void EnablePinsPhysics();
 	void DisablePinsPhysicsForStandingPins();
 	void ShowCurrentPlayerScorecard();
