@@ -53,7 +53,7 @@ void ABowlingGameModeBase::SaveScoresAndUpdateVisualScorecard()
 	// Save the score
 	TArray<BowlingFrameScore*>* FrameScores = Players[CurrentPlayer]->GetAllFrameScores();
 
-	if (FrameScores->Num() == 0 || FrameScores->Last()->SecondBowl != -1)
+	if (FrameScores->Num() == 0 || (FrameScores->Last()->SecondBowl != -1 || FrameScores->Last()->FirstBowl == 10))
 	{
 		FrameScores->Add(new BowlingFrameScore());
 	}

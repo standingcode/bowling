@@ -33,8 +33,5 @@ public:
 	int32 SecondBowl = -1;
 	int32 ThirdBowl = -1;
 
-	bool WasAStrike = FirstBowl == 10;
-	bool WasASpare = FirstBowl + SecondBowl == 10;
-
 	int32 TotalFrameScore = -1;
 };
