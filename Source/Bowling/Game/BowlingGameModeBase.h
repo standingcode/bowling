@@ -105,4 +105,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void DescendPinsState();
+
+	// TODO: Dev stuff maybe delete later
+	void KnockPinsDown(int32 NumberOfPins);
 };

@@ -50,4 +50,7 @@ public:
 	void EnableCollisionsAndPhysics();
 	void DisableCollisionsAndPhysics();
 	AActor* Parent;
+
+	// TODO: Dev stuff maybe delete later
+	void KnockPinDown();
 };

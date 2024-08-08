@@ -39,6 +39,15 @@ protected:
 
 	class ABowlingGameModeBase* GameMode;
 
+	// TODO: Dev stuff maybe delete later
+	void DevKnockPinsDown(int32 NumberOfPins);
+
+	template<int32 NumberOfPins>
+	void DevKnockPinsDown()
+	{
+		DevKnockPinsDown(NumberOfPins);
+	}
+
 private:
 
 	// Variables

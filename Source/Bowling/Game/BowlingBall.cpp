@@ -54,6 +54,25 @@ void ABowlingBall::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	InputComponent->BindAxis("MoveLeftAndRight", this, &ABowlingBall::MoveLeftAndRight);
 	InputComponent->BindAction("Bowl", IE_Pressed, this, &ABowlingBall::Bowl);
 	InputComponent->BindAction("Reset", IE_Pressed, this, &ABowlingBall::Reset);
+
+	// TODO: Dev stuff maybe delete later
+	InputComponent->BindAction("one", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<1>);
+	InputComponent->BindAction("two", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<2>);
+	InputComponent->BindAction("three", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<3>);
+	InputComponent->BindAction("four", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<4>);
+	InputComponent->BindAction("five", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<5>);
+	InputComponent->BindAction("six", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<6>);
+	InputComponent->BindAction("seven", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<7>);
+	InputComponent->BindAction("eight", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<8>);
+	InputComponent->BindAction("nine", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<9>);
+	InputComponent->BindAction("ten", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<10>);
+}
+
+// TODO: Dev stuff maybe delete later
+void ABowlingBall::DevKnockPinsDown(int32 NumberOfPins)
+{
+	GameMode->KnockPinsDown(NumberOfPins);
+	ReportBallOffEdgeOrStoppedMoving();
 }
 
 void ABowlingBall::MoveLeftAndRight(float Value)

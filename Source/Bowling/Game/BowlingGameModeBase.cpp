@@ -352,3 +352,13 @@ void Print(FString Message)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, Message);
 }
+
+// TODO: Dev stuff maybe delete later
+void ABowlingGameModeBase::KnockPinsDown(int32 NumberOfPins)
+{
+	for (int32 i = 0; i < NumberOfPins; i++)
+	{
+		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
+		BowlingPin->KnockPinDown();
+	}
+}

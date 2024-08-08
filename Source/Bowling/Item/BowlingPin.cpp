@@ -93,6 +93,13 @@ void ABowlingPin::DisableCollisionsAndPhysics()
 	AttachToActor(Parent, FAttachmentTransformRules::KeepWorldTransform);
 }
 
+// TODO: Dev stuff maybe delete later
+void ABowlingPin::KnockPinDown()
+{
+	PinFellOffEdge = true;
+	ResetPinToOriginalPositionAndHide();
+}
+
 void ABowlingPin::EnableCollisionsAndPhysics()
 {
 	Mesh->SetSimulatePhysics(true);
