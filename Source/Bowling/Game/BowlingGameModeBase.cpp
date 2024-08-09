@@ -101,7 +101,7 @@ void ABowlingGameModeBase::UpdateTotalScore(TArray<BowlingFrameScore*>* FrameSco
 		// If it's a strike, check for first bowl in the frame ahead, if existing
 		if ((*FrameScores)[i]->FirstBowl == 10)
 		{
-			// We have a strike in this frame but no existing next frame
+			// We have a strike in this frame but the next frame doesn't exist yet
 			if (FrameScores->Num() > i + 1)
 			{
 				// If there was a strike in the following frame we also need to check if the next next frame exists in order to score the bonus
@@ -116,8 +116,13 @@ void ABowlingGameModeBase::UpdateTotalScore(TArray<BowlingFrameScore*>* FrameSco
 					break;
 				}
 
-				(*FrameScores)[i]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[i + 1]->FirstBowl
-					+ ((*FrameScores)[i]->SecondBowl == -1 ? 0 : (*FrameScores)[i]->SecondBowl);
+				// If the second bowl in the following frame doesn't exist yet, we don't score it yet
+				if ((*FrameScores)[i + 1]->SecondBowl == -1)
+				{
+					continue;
+				}
+
+				(*FrameScores)[i]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[i + 1]->FirstBowl + (*FrameScores)[i + 1]->SecondBowl;
 				continue;
 			}
 
