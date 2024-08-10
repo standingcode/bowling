@@ -42,11 +42,15 @@ protected:
 	void CheckPinMovement();
 	void SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores);
 	void UpdateTotalScore(TArray<BowlingFrameScore*>* FrameScores);
+	void ScoreAnOpenFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
+	bool ScoreASpareFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
+	bool ScoreAStrikeFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
 	void EnablePinsPhysics();
 	void DisablePinsPhysicsForStandingPins();
 	void ShowCurrentPlayerScorecard();
 	int32 GetNumberOfPinsDown();
 	void ResetAllPins();
+	void EndGame();
 
 	// Variables
 	TArray<AActor*> BowlingPins;

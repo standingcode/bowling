@@ -81,68 +81,85 @@ void ABowlingGameModeBase::UpdateTotalScore(TArray<BowlingFrameScore*>* FrameSco
 
 	for (int32 i = 0; i < FrameScores->Num(); i++)
 	{
+		// If the total score is already calculated, skip
 		if ((*FrameScores)[i]->TotalRunningScore != -1) { continue; }
-
-		if ((*FrameScores)[i]->FirstBowl != 10 && (*FrameScores)[i]->SecondBowl == -1)
-		{
-			break;
-		}
-
-		int32 PreviousTotal = 0;
-
-		if (i != 0)
-		{
-			if ((*FrameScores)[i - 1]->TotalRunningScore != -1)
-			{
-				PreviousTotal = (*FrameScores)[i - 1]->TotalRunningScore;
-			}
-		}
 
 		// If it's a strike, check for first bowl in the frame ahead, if existing
 		if ((*FrameScores)[i]->FirstBowl == 10)
 		{
-			// We have a strike in this frame but the next frame doesn't exist yet
-			if (FrameScores->Num() > i + 1)
-			{
-				// If there was a strike in the following frame we also need to check if the next next frame exists in order to score the bonus
-				if ((*FrameScores)[i + 1]->FirstBowl == 10)
-				{
-					if (FrameScores->Num() > i + 2)
-					{
-						(*FrameScores)[i]->TotalRunningScore = PreviousTotal + 10 + 10 + (*FrameScores)[i + 2]->FirstBowl;
-						continue;
-					}
-
-					break;
-				}
-
-				// If the second bowl in the following frame doesn't exist yet, we don't score it yet
-				if ((*FrameScores)[i + 1]->SecondBowl == -1)
-				{
-					continue;
-				}
-
-				(*FrameScores)[i]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[i + 1]->FirstBowl + (*FrameScores)[i + 1]->SecondBowl;
-				continue;
-			}
+			if (ScoreAStrikeFrame(i, FrameScores)) { continue; }
 
 			break;
 		}
-		// If it's a spare need to check the first bowl in the frame ahead
-		else if ((*FrameScores)[i]->FirstBowl + (*FrameScores)[i]->SecondBowl == 10)
+
+		// If the first bowl is done but not a strike, and the second not done, we can't score it yet
+		if ((*FrameScores)[i]->SecondBowl == -1)
 		{
-			if (FrameScores->Num() > i + 1)
-			{
-				(*FrameScores)[i]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[i + 1]->FirstBowl;
-				continue;
-			}
+			break;
+		}
+
+		// If it's a spare need to check the first bowl in the frame ahead
+		if ((*FrameScores)[i]->FirstBowl + (*FrameScores)[i]->SecondBowl == 10)
+		{
+			if (ScoreASpareFrame(i, FrameScores)) { continue; }
 
 			break;
 		}
 
-		(*FrameScores)[i]->TotalRunningScore = PreviousTotal + (*FrameScores)[i]->FirstBowl
-			+ ((*FrameScores)[i]->SecondBowl == -1 ? 0 : (*FrameScores)[i]->SecondBowl);
+		ScoreAnOpenFrame(i, FrameScores);
 	}
+}
+
+void ABowlingGameModeBase::ScoreAnOpenFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores)
+{
+	int32 PreviousTotal = FrameIndex == 0 ? 0 : (*FrameScores)[FrameIndex - 1]->TotalRunningScore;
+
+	(*FrameScores)[FrameIndex]->TotalRunningScore = PreviousTotal + (*FrameScores)[FrameIndex]->FirstBowl + (*FrameScores)[FrameIndex]->SecondBowl;
+}
+
+bool ABowlingGameModeBase::ScoreASpareFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores)
+{
+	int32 PreviousTotal = FrameIndex == 0 ? 0 : (*FrameScores)[FrameIndex - 1]->TotalRunningScore;
+
+	if (FrameScores->Num() > FrameIndex + 1)
+	{
+		(*FrameScores)[FrameIndex]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[FrameIndex + 1]->FirstBowl;
+		return true;
+	}
+
+	return false;
+}
+
+bool ABowlingGameModeBase::ScoreAStrikeFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores)
+{
+	int32 PreviousTotal = FrameIndex == 0 ? 0 : (*FrameScores)[FrameIndex - 1]->TotalRunningScore;
+
+	// We have a strike in this frame but the next frame doesn't exist yet
+	if (FrameScores->Num() > FrameIndex + 1)
+	{
+		// If there was a strike in the following frame we also need to check if the next next frame exists in order to score the bonus
+		if ((*FrameScores)[FrameIndex + 1]->FirstBowl == 10)
+		{
+			if (FrameScores->Num() > FrameIndex + 2)
+			{
+				(*FrameScores)[FrameIndex]->TotalRunningScore = PreviousTotal + 10 + 10 + (*FrameScores)[FrameIndex + 2]->FirstBowl;
+				return true;
+			}
+
+			return false;
+		}
+
+		// If the second bowl in the following frame doesn't exist yet, we don't score it yet
+		if ((*FrameScores)[FrameIndex + 1]->SecondBowl == -1)
+		{
+			return true;
+		}
+
+		(*FrameScores)[FrameIndex]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[FrameIndex + 1]->FirstBowl + (*FrameScores)[FrameIndex + 1]->SecondBowl;
+		return true;
+	}
+
+	return false;
 }
 
 int32 ABowlingGameModeBase::GetNumberOfPinsDown()
@@ -243,6 +260,11 @@ void ABowlingGameModeBase::NextPlayer()
 	}
 
 	ShowCurrentPlayerScorecard();
+}
+
+void ABowlingGameModeBase::EndGame()
+{
+
 }
 
 // State stuff
