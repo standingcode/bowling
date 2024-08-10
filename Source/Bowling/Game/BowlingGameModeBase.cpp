@@ -58,7 +58,7 @@ void ABowlingGameModeBase::SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores
 {
 	int32 NumberOfPinsDown = GetNumberOfPinsDown();
 
-	if (FrameScores->Num() == 0 || (FrameScores->Last()->SecondBowl != -1 || FrameScores->Last()->FirstBowl == 10))
+	if (FrameScores->Num() < 10 && (FrameScores->Num() == 0 || (FrameScores->Last()->SecondBowl != -1 || FrameScores->Last()->FirstBowl == 10)))
 	{
 		FrameScores->Add(new BowlingFrameScore());
 	}
@@ -66,12 +66,59 @@ void ABowlingGameModeBase::SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores
 	if (FrameScores->Last()->FirstBowl == -1)
 	{
 		FrameScores->Last()->FirstBowl = NumberOfPinsDown;
-		if (NumberOfPinsDown == 10) { PlayerShouldChange = true; }
+
+		// If it's a strike
+		if (NumberOfPinsDown == 10)
+		{
+			// We're in the last frame, need to reset the pins for last two bowls
+			if (FrameScores->Num() == 10)
+			{
+				PinsShouldBeReset = true;
+				return;
+			}
+
+			// Normal frame
+			PlayerShouldChange = true;
+		}
 	}
-	else
+	else if (FrameScores->Last()->SecondBowl == -1)
 	{
+		// We're in the last frame...
+		if (FrameScores->Num() == 10)
+		{
+			// There was a strike on the first bowl, we just score this as normal
+			if (FrameScores->Last()->FirstBowl == 10)
+			{
+				FrameScores->Last()->SecondBowl = NumberOfPinsDown;
+
+				// If it's a strike
+				if (NumberOfPinsDown == 10)
+				{
+					PinsShouldBeReset = true;
+				}
+			}
+			// Otherwise it's number of pins down minus the first bowl as normal
+			else
+			{
+				FrameScores->Last()->SecondBowl = NumberOfPinsDown - FrameScores->Last()->FirstBowl;
+
+				// If this is a spare, need to reset the pins
+				if (FrameScores->Last()->FirstBowl + FrameScores->Last()->SecondBowl == 10)
+				{
+					PinsShouldBeReset = true;
+				}
+			}
+
+			return;
+		}
+
+		// Normal frame
 		FrameScores->Last()->SecondBowl = NumberOfPinsDown - FrameScores->Last()->FirstBowl;
 		PlayerShouldChange = true;
+	}
+	else if (FrameScores->Last()->ThirdBowl == -1 && FrameScores->Num() == 10)
+	{
+		FrameScores->Last()->ThirdBowl = NumberOfPinsDown;
 	}
 }
 
@@ -81,6 +128,12 @@ void ABowlingGameModeBase::UpdateTotalScore(TArray<BowlingFrameScore*>* FrameSco
 
 	for (int32 i = 0; i < FrameScores->Num(); i++)
 	{
+		if (i == 9)
+		{
+			ScoreTheEndFrame(FrameScores);
+			break;
+		}
+
 		// If the total score is already calculated, skip
 		if ((*FrameScores)[i]->TotalRunningScore != -1) { continue; }
 
@@ -134,11 +187,10 @@ bool ABowlingGameModeBase::ScoreAStrikeFrame(int32 FrameIndex, TArray<BowlingFra
 {
 	int32 PreviousTotal = FrameIndex == 0 ? 0 : (*FrameScores)[FrameIndex - 1]->TotalRunningScore;
 
-	// We have a strike in this frame but the next frame doesn't exist yet
 	if (FrameScores->Num() > FrameIndex + 1)
 	{
 		// If there was a strike in the following frame we also need to check if the next next frame exists in order to score the bonus
-		if ((*FrameScores)[FrameIndex + 1]->FirstBowl == 10)
+		if ((*FrameScores)[FrameIndex + 1]->FirstBowl == 10 && !(FrameIndex + 1 == 9))
 		{
 			if (FrameScores->Num() > FrameIndex + 2)
 			{
@@ -160,6 +212,40 @@ bool ABowlingGameModeBase::ScoreAStrikeFrame(int32 FrameIndex, TArray<BowlingFra
 	}
 
 	return false;
+}
+
+void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameScores)
+{
+	int32 PreviousTotal = (*FrameScores)[8]->TotalRunningScore;
+
+	// If we have completed the second bowl and it's an open frame, we can score and complete now
+	if ((*FrameScores)[9]->SecondBowl != -1 && ((*FrameScores)[9]->FirstBowl + (*FrameScores)[9]->SecondBowl) < 10)
+	{
+		(*FrameScores)[9]->TotalRunningScore = PreviousTotal + (*FrameScores)[9]->FirstBowl + (*FrameScores)[9]->SecondBowl;
+
+		// Need to update final score here too, to the same value
+
+		GameHasEnded = true;
+	}
+
+	// Otherwise if we have completed all three bowls we can score and complete now
+	if ((*FrameScores)[9]->ThirdBowl != -1)
+	{
+		// If the first bowl was a strike, we do 10 plus second and third bowls
+		if ((*FrameScores)[9]->FirstBowl == 10)
+		{
+			(*FrameScores)[9]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[9]->SecondBowl + (*FrameScores)[9]->ThirdBowl;
+
+			GameHasEnded = true;
+			return;
+		}
+
+		// Otherwise it must be a spare
+		(*FrameScores)[9]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[9]->ThirdBowl;
+
+		GameHasEnded = true;
+
+	}
 }
 
 int32 ABowlingGameModeBase::GetNumberOfPinsDown()
@@ -248,6 +334,14 @@ void ABowlingGameModeBase::ShowCurrentPlayerScorecard()
 	}
 }
 
+void ABowlingGameModeBase::ShowAllPLayersScorecard()
+{
+	if (BowlingWidget)
+	{
+		BowlingWidget->ShowScorecards(Players);
+	}
+}
+
 void ABowlingGameModeBase::NextPlayer()
 {
 	// ResetPins
@@ -264,7 +358,7 @@ void ABowlingGameModeBase::NextPlayer()
 
 void ABowlingGameModeBase::EndGame()
 {
-
+	ShowAllPLayersScorecard();
 }
 
 // State stuff
@@ -342,8 +436,15 @@ void ABowlingGameModeBase::CheckPinsHaveStoppedMoving_Implementation()
 void ABowlingGameModeBase::AnalyseScoreState_Implementation()
 {
 	SaveScores();
-	ShowCurrentPlayerScorecard();
-	ChangeState(static_cast<uint8>(BowlingState::Sweep));
+	if (!GameHasEnded)
+	{
+		ShowCurrentPlayerScorecard();
+		ChangeState(static_cast<uint8>(BowlingState::Sweep));
+	}
+	else
+	{
+		EndGame();
+	}
 }
 
 void ABowlingGameModeBase::SweepState_Implementation()
@@ -360,11 +461,17 @@ void ABowlingGameModeBase::CheckChangePlayerState_Implementation()
 	// If we should change to the next player, we need to reset the pins
 	if (PlayerShouldChange)
 	{
-		ResetAllPins();
 		NextPlayer();
+		ResetAllPins();
+	}
+
+	if (PinsShouldBeReset)
+	{
+		ResetAllPins();
 	}
 
 	PlayerShouldChange = false;
+	PinsShouldBeReset = false;
 	ChangeState(static_cast<uint8>(BowlingState::DescendPins));
 }
 

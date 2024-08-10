@@ -45,9 +45,11 @@ protected:
 	void ScoreAnOpenFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
 	bool ScoreASpareFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
 	bool ScoreAStrikeFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
+	void ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameScores);
 	void EnablePinsPhysics();
 	void DisablePinsPhysicsForStandingPins();
 	void ShowCurrentPlayerScorecard();
+	void ShowAllPLayersScorecard();
 	int32 GetNumberOfPinsDown();
 	void ResetAllPins();
 	void EndGame();
@@ -59,6 +61,8 @@ protected:
 
 	bool PinsBeingChecked = false;
 	bool PlayerShouldChange = false;
+	bool PinsShouldBeReset = false;
+	bool GameHasEnded = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBowlingWidget* BowlingWidget;

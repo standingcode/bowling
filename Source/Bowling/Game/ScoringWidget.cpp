@@ -12,20 +12,28 @@ void UScoringWidget::SetNameText(FString text)
 	}
 }
 
-void UScoringWidget::SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, int32 FrameTotal)
+void UScoringWidget::SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, int32 Bowl3, int32 FrameTotal)
 {
 	if (!BowlScores.IsValidIndex(FrameIndex)) { return; }
 
 	if (Bowl1 == 10)
 	{
-		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("X"));
-
-		if (FrameTotal != -1)
+		// If we're in the last frame
+		if (FrameIndex == 9)
 		{
-			FrameTotals[FrameIndex]->SetText(FText::FromString(FString::FromInt(FrameTotal)));
+			BowlScores[(FrameIndex * 2)]->SetText(FText::FromString("X"));
 		}
+		else
+		{
+			BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("X"));
 
-		return;
+			if (FrameTotal != -1)
+			{
+				FrameTotals[FrameIndex]->SetText(FText::FromString(FString::FromInt(FrameTotal)));
+			}
+
+			return;
+		}
 	}
 	else if (Bowl1 == 0)
 	{
@@ -36,7 +44,19 @@ void UScoringWidget::SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, i
 		BowlScores[FrameIndex * 2]->SetText(FText::FromString(FString::FromInt(Bowl1)));
 	}
 
-	if (Bowl2 == 0)
+	if (Bowl2 == 10)
+	{
+		// We're in the last frame
+		if (FrameIndex == 9)
+		{
+			BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("X"));
+		}
+		else
+		{
+			BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("/"));
+		}
+	}
+	else if (Bowl2 == 0)
 	{
 		BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString("-"));
 	}
@@ -50,6 +70,19 @@ void UScoringWidget::SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, i
 		{
 			BowlScores[(FrameIndex * 2) + 1]->SetText(FText::FromString(FString::FromInt(Bowl2)));
 		}
+	}
+
+	if (Bowl3 == 10)
+	{
+		BowlScores[(FrameIndex * 2) + 2]->SetText(FText::FromString("X"));
+	}
+	else if (Bowl3 == 0)
+	{
+		BowlScores[(FrameIndex * 2) + 2]->SetText(FText::FromString("-"));
+	}
+	else if (Bowl3 != -1)
+	{
+		BowlScores[(FrameIndex * 2) + 2]->SetText(FText::FromString(FString::FromInt(Bowl3)));
 	}
 
 	if (FrameTotal != -1)
@@ -70,7 +103,7 @@ void UScoringWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	for (int32 i = 0; i <= 20; i++)
+	for (int32 i = 0; i <= 21; i++)
 	{
 		UTextBlock* TempTextBlock = Cast<UTextBlock>(GetWidgetFromName(FName("bowl_score_" + FString::FromInt(i))));
 		if (TempTextBlock != nullptr)
@@ -101,24 +134,6 @@ void UScoringWidget::SetScorecardData(BowlingPlayer* BowlingPLayer)
 
 		if (FrameScore->FirstBowl == -1) { break; }
 
-		SetFrameScore(i, FrameScore->FirstBowl, FrameScore->SecondBowl, FrameScore->TotalRunningScore);
+		SetFrameScore(i, FrameScore->FirstBowl, FrameScore->SecondBowl, FrameScore->ThirdBowl, FrameScore->TotalRunningScore);
 	}
 }
-
-// If previous frame was a strike and we've completed the 2nd bowl of this frame we can fill the total for previous
-//if (FrameScores[i - 1]->WasAStrike && i != 0)
-//{
-//	SetFrameTotal(i - 1, 10 + FrameScore->FirstBowl + FrameScore->SecondBowl);
-//}
-
-//// If previous frame was a spare and we've completed the 1st bowl of this frame we can fill the total for previous
-//if (FrameScores[i - 1]->WasASpare && i != 0)
-//{
-//	SetFrameTotal(i - 1, 10 + FrameScore->FirstBowl);
-//}
-
-//// If the 2 scores are less than 10 we can fill the total for this frame now
-//if (FrameScore->FirstBowl + FrameScore->SecondBowl < 10)
-//{
-//	SetFrameTotal(i, FrameScore->FirstBowl + FrameScore->SecondBowl);
-//}

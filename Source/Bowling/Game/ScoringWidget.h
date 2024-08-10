@@ -19,7 +19,7 @@ class BOWLING_API UScoringWidget : public UUserWidget
 protected:
 
 	void SetNameText(FString text);
-	void SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, int32 FrameTotal);
+	void SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, int32 Bowl3, int32 FrameTotal);
 	void SetFinalScore(int32 Score);
 
 	// WIDGET REFERENCES
