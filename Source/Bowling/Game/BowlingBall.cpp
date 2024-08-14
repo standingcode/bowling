@@ -33,6 +33,8 @@ void ABowlingBall::BeginPlay()
 	Mesh->SetSimulatePhysics(false);
 	InitialBallPosition = GetActorLocation();
 
+	HideBall();
+
 	// Reference to the GameModeBase script
 	GameMode = Cast<ABowlingGameModeBase>(GetWorld()->GetAuthGameMode());
 }
@@ -77,13 +79,7 @@ void ABowlingBall::DevKnockPinsDown(int32 NumberOfPins)
 
 void ABowlingBall::MoveLeftAndRight(float Value)
 {
-	if (
-		GameMode->BowlingState == BowlingState::BallInMotion
-		|| GameMode->BowlingState == BowlingState::PlayerHasLaunchedBall
-		)
-	{
-		return;
-	}
+	if (!(GameMode->BowlingState == BowlingState::ReadyToBowl)) { return; }
 
 	// Move the player left and right
 	FVector NewLocation = GetActorLocation();
@@ -98,10 +94,12 @@ void ABowlingBall::Bowl()
 {
 	if (!(GameMode->BowlingState == BowlingState::ReadyToBowl)) { return; }
 
+	GameMode->ChangeState(static_cast<uint8>(BowlingState::PlayerHasLaunchedBall));
+
 	EnableCollisions();
 
-	GameMode->ChangeState(static_cast<uint8>(BowlingState::PlayerHasLaunchedBall));
-	//GEngine->AddOnScreenDebugMessage(-3, 0.5f, FColor::White, FString::Printf(TEXT("Got here and power is: %f"), BowlingForce));
+	Mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
+	Mesh->SetPhysicsAngularVelocityInDegrees(FVector(0, 0, 0));
 	Mesh->AddImpulse(FVector(BowlingForce, 0, 0));
 }
 

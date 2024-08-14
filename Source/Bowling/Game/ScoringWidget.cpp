@@ -89,6 +89,14 @@ void UScoringWidget::SetFrameScore(int32 FrameIndex, int32 Bowl1, int32 Bowl2, i
 	{
 		FrameTotals[FrameIndex]->SetText(FText::FromString(FString::FromInt(FrameTotal)));
 	}
+
+	if (FrameIndex == 9)
+	{
+		if (FrameTotal != -1)
+		{
+			FinalScore->SetText(FText::FromString(FString::FromInt(FrameTotal)));
+		}
+	}
 }
 
 void UScoringWidget::SetFinalScore(int32 Score)
