@@ -223,9 +223,14 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 	{
 		(*FrameScores)[9]->TotalRunningScore = PreviousTotal + (*FrameScores)[9]->FirstBowl + (*FrameScores)[9]->SecondBowl;
 
-		// Need to update final score here too, to the same value
-
-		GameHasEnded = true;
+		if (CurrentPlayer == NumberOfPlayers - 1)
+		{
+			GameHasEnded = true;
+		}
+		else
+		{
+			PlayerShouldChange = true;
+		}
 	}
 
 	// Otherwise if we have completed all three bowls we can score and complete now
@@ -236,15 +241,29 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 		{
 			(*FrameScores)[9]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[9]->SecondBowl + (*FrameScores)[9]->ThirdBowl;
 
-			GameHasEnded = true;
+			if (CurrentPlayer == NumberOfPlayers - 1)
+			{
+				GameHasEnded = true;
+			}
+			else
+			{
+				PlayerShouldChange = true;
+			}
+
 			return;
 		}
 
 		// Otherwise it must be a spare
 		(*FrameScores)[9]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[9]->ThirdBowl;
 
-		GameHasEnded = true;
-
+		if (CurrentPlayer == NumberOfPlayers - 1)
+		{
+			GameHasEnded = true;
+		}
+		else
+		{
+			PlayerShouldChange = true;
+		}
 	}
 }
 
