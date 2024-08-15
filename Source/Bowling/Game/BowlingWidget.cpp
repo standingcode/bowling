@@ -18,7 +18,6 @@ void UBowlingWidget::ShowScorecards(TArray<BowlingPlayer*> players)
 	while (VerticalBoxForScorecardWidget->GetChildrenCount() > 1)
 	{
 		VerticalBoxForScorecardWidget->RemoveChildAt(VerticalBoxForScorecardWidget->GetChildrenCount() - 1);
-		//VerticalBoxForScorecardWidget->RemoveChildAt(-1);
 	}
 
 	CreateScoringWidget(players.Num());
@@ -26,12 +25,11 @@ void UBowlingWidget::ShowScorecards(TArray<BowlingPlayer*> players)
 	for (int32 i = 0; i < players.Num(); i++)
 	{
 		VerticalBoxForScorecardWidget->AddChildToVerticalBox(ScoringWidgets[i]);
-		//ScoringWidgets[i]->SetNameText(players[i]->GetName());
 		ScoringWidgets[i]->SetScorecardData(players[i]);
 	}
 }
 
 void UBowlingWidget::ShowGameOverText()
 {
-	GameOverSizeBox->SetVisibility(ESlateVisibility::Visible);
+	GameOverCanvasPanel->SetVisibility(ESlateVisibility::Visible);
 }
