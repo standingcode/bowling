@@ -8,6 +8,7 @@
 #include "BowlingScorerComponent.h"
 #include "BowlingPlayer.h"
 #include "ScoringWidget.h"
+#include "MainMenu.h"
 #include "BowlingGameModeBase.generated.h"
 
 
@@ -64,13 +65,16 @@ protected:
 	bool PinsBeingChecked = false;
 	bool PlayerShouldChange = false;
 	bool PinsShouldBeReset = false;
-	bool GameHasEnded = false;
+	bool GameIsNotInPlay = true;
 
 	float TimeSinceLastPinMovementCheck = 0.0f;
 	float TimeBetweenPinMovementCheck = 0.1f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBowlingWidget* BowlingWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UMainMenu* MainMenuWidget;
 
 	UPROPERTY()
 	UBowlingScorerComponent* BowlingScorerComponent;

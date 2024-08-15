@@ -56,6 +56,7 @@ void ABowlingBall::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	InputComponent->BindAxis("MoveLeftAndRight", this, &ABowlingBall::MoveLeftAndRight);
 	InputComponent->BindAction("Bowl", IE_Pressed, this, &ABowlingBall::Bowl);
 	InputComponent->BindAction("Reset", IE_Pressed, this, &ABowlingBall::Reset);
+	InputComponent->BindAction("Quit", IE_Pressed, this, &ABowlingBall::Quit);
 
 	// TODO: Dev stuff maybe delete later
 	InputComponent->BindAction("one", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<1>);
@@ -101,6 +102,11 @@ void ABowlingBall::Bowl()
 	Mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
 	Mesh->SetPhysicsAngularVelocityInDegrees(FVector(0, 0, 0));
 	Mesh->AddImpulse(FVector(BowlingForce, 0, 0));
+}
+
+void ABowlingBall::Quit()
+{
+	FGenericPlatformMisc::RequestExit(false);
 }
 
 void ABowlingBall::ResetBall()

@@ -56,6 +56,7 @@ private:
 	// Functions
 	void MoveLeftAndRight(float Value);
 	void Bowl();
+	void Quit();
 
 	UFUNCTION(BlueprintCallable)
 	void CheckCurrentBallSpeed(FVector velocity);

@@ -24,18 +24,8 @@ void ABowlingGameModeBase::BeginPlay()
 		Players.Add(new BowlingPlayer(FString::Printf(TEXT("Player %i"), i + 1)));
 	}
 
-	/*for (int32 i = 0; i < NumberOfPlayers; i++)
-	{
-		GEngine->AddOnScreenDebugMessage(
-			-1,
-			5.0f,
-			FColor::White,
-			FString::Printf(TEXT("Player name is: %s"), *Players[i]->GetName()));
-	}*/
-
-
-	// Launch new game
-	ChangeState(static_cast<uint8>(BowlingState::NewGame));
+	//// Launch new game
+	//ChangeState(static_cast<uint8>(BowlingState::NewGame));
 }
 
 void ABowlingGameModeBase::Tick(float DeltaTime)
@@ -224,7 +214,7 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 
 		if (CurrentPlayer == NumberOfPlayers - 1)
 		{
-			GameHasEnded = true;
+			GameIsNotInPlay = true;
 		}
 		else
 		{
@@ -242,7 +232,7 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 
 			if (CurrentPlayer == NumberOfPlayers - 1)
 			{
-				GameHasEnded = true;
+				GameIsNotInPlay = true;
 			}
 			else
 			{
@@ -257,7 +247,7 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 
 		if (CurrentPlayer == NumberOfPlayers - 1)
 		{
-			GameHasEnded = true;
+			GameIsNotInPlay = true;
 		}
 		else
 		{
@@ -491,7 +481,7 @@ void ABowlingGameModeBase::CheckPinsHaveStoppedMoving_Implementation()
 void ABowlingGameModeBase::AnalyseScoreState_Implementation()
 {
 	SaveScores();
-	if (!GameHasEnded)
+	if (!GameIsNotInPlay)
 	{
 		ShowCurrentPlayerScorecard();
 		ChangeState(static_cast<uint8>(BowlingState::Sweep));
