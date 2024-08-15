@@ -52,6 +52,8 @@ protected:
 	void ShowEndPlayersScorecardAndGameOverText();
 	int32 GetNumberOfPinsDown();
 	void ResetAllPins();
+	void ResetStandingPinsToOriginalPosition();
+	void ResetNonStandingPinsToOriginalPosition();
 	void EndGame();
 
 	// Variables

@@ -289,6 +289,31 @@ void ABowlingGameModeBase::ResetAllPins()
 	}
 }
 
+void ABowlingGameModeBase::ResetStandingPinsToOriginalPosition()
+{
+	// Reset all of the pins' position
+	for (int32 i = 0; i < BowlingPins.Num(); i++)
+	{
+		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
+		if (BowlingPin->IsStanding())
+		{
+			BowlingPin->ResetToOriginalPositionAndRotation();
+		}
+	}
+}
+
+void ABowlingGameModeBase::ResetNonStandingPinsToOriginalPosition()
+{
+	for (int32 i = 0; i < BowlingPins.Num(); i++)
+	{
+		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
+		if (!BowlingPin->IsStanding())
+		{
+			BowlingPin->ResetPinToOriginalPositionAndHide();
+		}
+	}
+}
+
 void ABowlingGameModeBase::CheckPinMovement(float DeltaTime)
 {
 	if (!(BowlingState == BowlingState::CheckPinsHaveStoppedMoving) || PinsBeingChecked) { return; }
@@ -481,12 +506,12 @@ void ABowlingGameModeBase::SweepState_Implementation()
 {
 	// Disable pin physics for the pins that need to remain standing
 	DisablePinsPhysicsForStandingPins();
-
+	ResetStandingPinsToOriginalPosition();
 }
 
 void ABowlingGameModeBase::CheckChangePlayerState_Implementation()
 {
-	// Can add a catch to check if any pins somehow got lost during the sweep here....
+	ResetNonStandingPinsToOriginalPosition();
 
 	// If we should change to the next player, we need to reset the pins
 	if (PlayerShouldChange)
