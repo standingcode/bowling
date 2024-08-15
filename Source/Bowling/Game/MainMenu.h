@@ -14,4 +14,18 @@ class BOWLING_API UMainMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
+protected:
+
+	class ABowlingGameModeBase* GameMode;
+
+
+public:
+
+	virtual void NativeConstruct() override;
+
+	UFUNCTION(BlueprintCallable)
+	void StartGame();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 NumberOfPlayers = 1;
 };

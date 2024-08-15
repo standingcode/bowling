@@ -3,6 +3,28 @@
 
 #include "ScoringWidget.h"
 
+void UScoringWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	for (int32 i = 0; i <= 21; i++)
+	{
+		UTextBlock* TempTextBlock = Cast<UTextBlock>(GetWidgetFromName(FName("bowl_score_" + FString::FromInt(i))));
+		if (TempTextBlock != nullptr)
+		{
+			BowlScores.Add(TempTextBlock);
+		}
+	}
+
+	for (int32 i = 0; i <= 9; i++)
+	{
+		UTextBlock* TempTextBlock = Cast<UTextBlock>(GetWidgetFromName(FName("round_total_" + FString::FromInt(i))));
+		if (TempTextBlock != nullptr)
+		{
+			FrameTotals.Add(TempTextBlock);
+		}
+	}
+}
 
 void UScoringWidget::SetNameText(FString text)
 {
@@ -104,29 +126,6 @@ void UScoringWidget::SetFinalScore(int32 Score)
 	if (FinalScore != nullptr)
 	{
 		FinalScore->SetText(FText::FromString(FString::FromInt(Score)));
-	}
-}
-
-void UScoringWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-
-	for (int32 i = 0; i <= 21; i++)
-	{
-		UTextBlock* TempTextBlock = Cast<UTextBlock>(GetWidgetFromName(FName("bowl_score_" + FString::FromInt(i))));
-		if (TempTextBlock != nullptr)
-		{
-			BowlScores.Add(TempTextBlock);
-		}
-	}
-
-	for (int32 i = 0; i <= 9; i++)
-	{
-		UTextBlock* TempTextBlock = Cast<UTextBlock>(GetWidgetFromName(FName("round_total_" + FString::FromInt(i))));
-		if (TempTextBlock != nullptr)
-		{
-			FrameTotals.Add(TempTextBlock);
-		}
 	}
 }
 

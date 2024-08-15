@@ -65,7 +65,7 @@ protected:
 	bool PinsBeingChecked = false;
 	bool PlayerShouldChange = false;
 	bool PinsShouldBeReset = false;
-	bool GameIsNotInPlay = true;
+	bool GameIsInProgress = false;
 
 	float TimeSinceLastPinMovementCheck = 0.0f;
 	float TimeBetweenPinMovementCheck = 0.1f;
@@ -79,8 +79,8 @@ protected:
 	UPROPERTY()
 	UBowlingScorerComponent* BowlingScorerComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int NumberOfPlayers = 1;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//int NumberOfPlayers = 1;
 
 	int32 CurrentPlayer = 0;
 

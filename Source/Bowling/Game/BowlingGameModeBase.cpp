@@ -16,13 +16,7 @@ void ABowlingGameModeBase::BeginPlay()
 	// Instantiate a new instance of bowling scorer object
 	BowlingScorerComponent = NewObject<UBowlingScorerComponent>(this, TEXT("BowlingScorerComponent"));
 
-	//BowlingScorerComponent->RegisterComponent();	
-
-	// Add players 	
-	for (int32 i = 0; i < NumberOfPlayers; i++)
-	{
-		Players.Add(new BowlingPlayer(FString::Printf(TEXT("Player %i"), i + 1)));
-	}
+	//BowlingScorerComponent->RegisterComponent();		
 
 	//// Launch new game
 	//ChangeState(static_cast<uint8>(BowlingState::NewGame));
@@ -212,9 +206,9 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 	{
 		(*FrameScores)[9]->TotalRunningScore = PreviousTotal + (*FrameScores)[9]->FirstBowl + (*FrameScores)[9]->SecondBowl;
 
-		if (CurrentPlayer == NumberOfPlayers - 1)
+		if (CurrentPlayer == MainMenuWidget->NumberOfPlayers - 1)
 		{
-			GameIsNotInPlay = true;
+			GameIsInProgress = false;
 		}
 		else
 		{
@@ -230,9 +224,9 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 		{
 			(*FrameScores)[9]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[9]->SecondBowl + (*FrameScores)[9]->ThirdBowl;
 
-			if (CurrentPlayer == NumberOfPlayers - 1)
+			if (CurrentPlayer == MainMenuWidget->NumberOfPlayers - 1)
 			{
-				GameIsNotInPlay = true;
+				GameIsInProgress = false;
 			}
 			else
 			{
@@ -245,9 +239,9 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 		// Otherwise it must be a spare
 		(*FrameScores)[9]->TotalRunningScore = PreviousTotal + 10 + (*FrameScores)[9]->ThirdBowl;
 
-		if (CurrentPlayer == NumberOfPlayers - 1)
+		if (CurrentPlayer == MainMenuWidget->NumberOfPlayers - 1)
 		{
-			GameIsNotInPlay = true;
+			GameIsInProgress = false;
 		}
 		else
 		{
@@ -393,7 +387,7 @@ void ABowlingGameModeBase::NextPlayer()
 
 	CurrentPlayer++;
 
-	if (CurrentPlayer > NumberOfPlayers - 1)
+	if (CurrentPlayer > MainMenuWidget->NumberOfPlayers - 1)
 	{
 		CurrentPlayer = 0;
 	}
@@ -455,6 +449,16 @@ void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 
 void ABowlingGameModeBase::NewGame_Implementation()
 {
+	GameIsInProgress = true;
+
+	Players.Empty();
+
+	// Add players 	
+	for (int32 i = 0; i < MainMenuWidget->NumberOfPlayers; i++)
+	{
+		Players.Add(new BowlingPlayer(FString::Printf(TEXT("Player %i"), i + 1)));
+	}
+
 	ShowCurrentPlayerScorecard();
 }
 
@@ -481,7 +485,7 @@ void ABowlingGameModeBase::CheckPinsHaveStoppedMoving_Implementation()
 void ABowlingGameModeBase::AnalyseScoreState_Implementation()
 {
 	SaveScores();
-	if (!GameIsNotInPlay)
+	if (GameIsInProgress)
 	{
 		ShowCurrentPlayerScorecard();
 		ChangeState(static_cast<uint8>(BowlingState::Sweep));
