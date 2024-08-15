@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "BowlingGameModeBase.h"
 #include "Kismet\GameplayStatics.h"
 #include "Bowling\Item\BowlingPin.h"
@@ -43,7 +42,7 @@ void ABowlingGameModeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	CheckPinMovement();
+	CheckPinMovement(DeltaTime);
 }
 
 void ABowlingGameModeBase::SaveScores()
@@ -290,9 +289,20 @@ void ABowlingGameModeBase::ResetAllPins()
 	}
 }
 
-void ABowlingGameModeBase::CheckPinMovement()
+void ABowlingGameModeBase::CheckPinMovement(float DeltaTime)
 {
 	if (!(BowlingState == BowlingState::CheckPinsHaveStoppedMoving) || PinsBeingChecked) { return; }
+
+	TimeSinceLastPinMovementCheck += DeltaTime;
+
+	if (TimeSinceLastPinMovementCheck >= TimeBetweenPinMovementCheck)
+	{
+		TimeSinceLastPinMovementCheck = 0.0f;
+	}
+	else
+	{
+		return;
+	}
 
 	PinsBeingChecked = true;
 
@@ -353,10 +363,11 @@ void ABowlingGameModeBase::ShowCurrentPlayerScorecard()
 	}
 }
 
-void ABowlingGameModeBase::ShowAllPLayersScorecard()
+void ABowlingGameModeBase::ShowEndPlayersScorecardAndGameOverText()
 {
 	if (BowlingWidget)
 	{
+		BowlingWidget->ShowGameOverText();
 		BowlingWidget->ShowScorecards(Players);
 	}
 }
@@ -377,7 +388,7 @@ void ABowlingGameModeBase::NextPlayer()
 
 void ABowlingGameModeBase::EndGame()
 {
-	ShowAllPLayersScorecard();
+	ShowEndPlayersScorecardAndGameOverText();
 }
 
 // State stuff

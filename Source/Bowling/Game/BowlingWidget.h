@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components\CanvasPanel.h"
 #include "Components\VerticalBox.h"
+#include "Components\SizeBox.h"
 #include "BowlingPlayer.h"
 #include "ScoringWidget.h"
 #include "BowlingWidget.generated.h"
@@ -23,6 +24,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UVerticalBox> VerticalBoxForScorecardWidget;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<USizeBox> GameOverSizeBox;
+
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UScoringWidget*> ScoringWidgets;
 
@@ -32,4 +36,5 @@ protected:
 public:
 
 	void ShowScorecards(TArray<BowlingPlayer*> players);
+	void ShowGameOverText();
 };
