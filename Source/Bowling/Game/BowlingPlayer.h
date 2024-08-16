@@ -24,6 +24,7 @@ public:
 	void SetName(FString Name);
 	FString GetName();
 	TArray<class BowlingFrameScore*>* GetAllFrameScores();
+	int32 GetRunningScoreForFinalFrame();
 };
 
 class BOWLING_API BowlingFrameScore

@@ -26,3 +26,8 @@ TArray<class BowlingFrameScore*>* BowlingPlayer::GetAllFrameScores()
 {
 	return &FrameScores;
 }
+
+int32 BowlingPlayer::GetRunningScoreForFinalFrame()
+{
+	return FrameScores[9]->TotalRunningScore;
+}

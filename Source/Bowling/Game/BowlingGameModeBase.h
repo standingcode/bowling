@@ -49,7 +49,6 @@ protected:
 	void ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameScores);
 	void EnablePinsPhysics();
 	void DisablePinsPhysicsForStandingPins();
-	void ShowCurrentPlayerScorecard();
 	void ShowEndPlayersScorecardAndGameOverText();
 	int32 GetNumberOfPinsDown();
 	void ResetAllPins();
@@ -89,10 +88,18 @@ protected:
 
 public:
 
+	bool IsGameInProgress();
+
 	BowlingState BowlingState = BowlingState::NewGame;
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeState(uint8 BowlingStateIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void ShowCurrentPlayerScorecard();
+
+	UFUNCTION(BlueprintCallable)
+	void ShowAllPlayersScorecards();
 
 	// State events
 

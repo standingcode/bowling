@@ -57,11 +57,12 @@ void ABowlingGameModeBase::SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores
 			if (FrameScores->Num() == 10)
 			{
 				PinsShouldBeReset = true;
-				return;
 			}
-
-			// Normal frame
-			PlayerShouldChange = true;
+			else
+			{
+				// Normal frame
+				PlayerShouldChange = true;
+			}
 		}
 	}
 	else if (FrameScores->Last()->SecondBowl == -1)
@@ -91,13 +92,13 @@ void ABowlingGameModeBase::SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores
 					PinsShouldBeReset = true;
 				}
 			}
-
-			return;
 		}
-
-		// Normal frame
-		FrameScores->Last()->SecondBowl = NumberOfPinsDown - FrameScores->Last()->FirstBowl;
-		PlayerShouldChange = true;
+		else
+		{
+			// Normal frame
+			FrameScores->Last()->SecondBowl = NumberOfPinsDown - FrameScores->Last()->FirstBowl;
+			PlayerShouldChange = true;
+		}
 	}
 	else if (FrameScores->Last()->ThirdBowl == -1 && FrameScores->Num() == 10)
 	{
@@ -372,11 +373,22 @@ void ABowlingGameModeBase::ShowCurrentPlayerScorecard()
 	}
 }
 
+void ABowlingGameModeBase::ShowAllPlayersScorecards()
+{
+	if (BowlingWidget)
+	{
+		BowlingWidget->ShowScorecards(Players);
+	}
+}
+
 void ABowlingGameModeBase::ShowEndPlayersScorecardAndGameOverText()
 {
 	if (BowlingWidget)
 	{
 		BowlingWidget->ShowGameOverText();
+
+		Players.Sort([](BowlingPlayer& A, BowlingPlayer& B) { return A.GetRunningScoreForFinalFrame() > B.GetRunningScoreForFinalFrame(); });
+
 		BowlingWidget->ShowScorecards(Players);
 	}
 }
@@ -385,14 +397,14 @@ void ABowlingGameModeBase::NextPlayer()
 {
 	// ResetPins
 
-	CurrentPlayer++;
-
-	if (CurrentPlayer > MainMenuWidget->NumberOfPlayers - 1)
-	{
-		CurrentPlayer = 0;
-	}
+	CurrentPlayer = CurrentPlayer == Players.Num() - 1 ? 0 : CurrentPlayer + 1;
 
 	ShowCurrentPlayerScorecard();
+}
+
+bool ABowlingGameModeBase::IsGameInProgress()
+{
+	return GameIsInProgress;
 }
 
 void ABowlingGameModeBase::EndGame()
@@ -521,6 +533,7 @@ void ABowlingGameModeBase::CheckChangePlayerState_Implementation()
 
 	PlayerShouldChange = false;
 	PinsShouldBeReset = false;
+
 	ChangeState(static_cast<uint8>(BowlingState::DescendPins));
 }
 

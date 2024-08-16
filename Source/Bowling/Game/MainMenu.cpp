@@ -9,7 +9,7 @@ void UMainMenu::HighlightNumberOfPlayersButton(int32 Index)
 	FString TheIndex;
 	TheIndex.AppendInt(Index);
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TheIndex);
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TheIndex);
 
 	for (int32 i = 0; i < NumberOfPlayersButtons.Num(); i++)
 	{
@@ -98,40 +98,10 @@ void UMainMenu::MoveCursor(int32 DirectionIndex)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, Direction);
 
+	if (GameMode->IsGameInProgress() == true) { return; }
+
 	enum CursorDirection CursorDirection = static_cast<enum CursorDirection>(DirectionIndex);
 
 	HighlightedButtonIndex = GetCorrectIndexForButtonToHighlight(CursorDirection);
 	HighlightNumberOfPlayersButton(HighlightedButtonIndex);
-
-	//switch (CursorDirection)
-	//{
-
-	//case CursorDirection::Up:
-
-	//	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Up"));
-
-	//	
-
-	//	break;
-
-	//case CursorDirection::Down:
-
-
-
-	//	break;
-
-	//case CursorDirection::Left:
-
-
-	//	break;
-
-	//case CursorDirection::Right:
-
-
-	//	break;
-
-	//default:
-	//	break;
-
-	//}
 }
