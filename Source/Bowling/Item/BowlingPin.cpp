@@ -4,7 +4,7 @@
 
 void ABowlingPin::BeginPlay()
 {
-	Parent = GetAttachParentActor();
+	OriginalParent = Mesh->GetAttachmentRoot();
 
 	Super::BeginPlay();
 
@@ -37,6 +37,7 @@ void ABowlingPin::ReadyPinForNewRound()
 
 void ABowlingPin::ResetToOriginalPositionAndRotation()
 {
+	Mesh->AttachToComponent(OriginalParent, FAttachmentTransformRules::KeepWorldTransform);
 	SetActorLocation(OriginalLocation + FVector(0.0f, 0.0f, GetRootZOffsetComparedToOriginalLocation()));
 	SetActorRotation(OriginalRotation);
 }
@@ -90,7 +91,12 @@ void ABowlingPin::DisableCollisionsAndPhysics()
 {
 	Mesh->SetSimulatePhysics(false);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	AttachToActor(Parent, FAttachmentTransformRules::KeepWorldTransform);
+	AttachToComponent(OriginalParent, FAttachmentTransformRules::KeepWorldTransform);
+}
+
+void ABowlingPin::DetachFromParent()
+{
+	DetachRootComponentFromParent();
 }
 
 // TODO: Dev stuff maybe delete later

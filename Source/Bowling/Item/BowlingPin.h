@@ -36,6 +36,8 @@ protected:
 	void CheckIfPinFellOffEdge();
 	float GetRootZOffsetComparedToOriginalLocation();
 
+	USceneComponent* OriginalParent;
+
 public:
 
 	// Functions
@@ -49,7 +51,7 @@ public:
 	void ReadyPinForNewRound();
 	void EnableCollisionsAndPhysics();
 	void DisableCollisionsAndPhysics();
-	AActor* Parent;
+	void DetachFromParent();
 
 	// TODO: Dev stuff maybe delete later
 	void KnockPinDown();

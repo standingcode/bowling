@@ -47,13 +47,12 @@ protected:
 	bool ScoreASpareFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
 	bool ScoreAStrikeFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
 	void ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameScores);
-	void EnablePinsPhysics();
+	void EnablePinsPhysicsAndDetachFromParent();
 	void DisablePinsPhysicsForStandingPins();
 	void ShowEndPlayersScorecardAndGameOverText();
 	int32 GetNumberOfPinsDown();
 	void ResetAllPins();
-	void ResetStandingPinsToOriginalPosition();
-	void ResetNonStandingPinsToOriginalPosition();
+	void ResetPinsToOriginalPosition();
 	void EndGame();
 
 	// Variables

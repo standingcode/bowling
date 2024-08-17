@@ -274,28 +274,13 @@ void ABowlingGameModeBase::ResetAllPins()
 	}
 }
 
-void ABowlingGameModeBase::ResetStandingPinsToOriginalPosition()
+void ABowlingGameModeBase::ResetPinsToOriginalPosition()
 {
 	// Reset all of the pins' position
 	for (int32 i = 0; i < BowlingPins.Num(); i++)
 	{
 		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
-		if (BowlingPin->IsStanding())
-		{
-			BowlingPin->ResetToOriginalPositionAndRotation();
-		}
-	}
-}
-
-void ABowlingGameModeBase::ResetNonStandingPinsToOriginalPosition()
-{
-	for (int32 i = 0; i < BowlingPins.Num(); i++)
-	{
-		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
-		if (!BowlingPin->IsStanding())
-		{
-			BowlingPin->ResetPinToOriginalPositionAndHide();
-		}
+		BowlingPin->ResetToOriginalPositionAndRotation();
 	}
 }
 
@@ -336,11 +321,12 @@ void ABowlingGameModeBase::CheckPinMovement(float DeltaTime)
 	ChangeState(static_cast<uint8>(BowlingState::AnalyseScore));
 }
 
-void ABowlingGameModeBase::EnablePinsPhysics()
+void ABowlingGameModeBase::EnablePinsPhysicsAndDetachFromParent()
 {
 	for (int32 i = 0; i < BowlingPins.Num(); i++)
 	{
 		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
+		BowlingPin->DetachFromParent();
 
 		if (!BowlingPin->DidFallOffEdge())
 		{
@@ -476,7 +462,7 @@ void ABowlingGameModeBase::NewGame_Implementation()
 
 void ABowlingGameModeBase::ReadyToBowl_Implementation()
 {
-	EnablePinsPhysics();
+	EnablePinsPhysicsAndDetachFromParent();
 }
 
 void ABowlingGameModeBase::PlayerHasLaunchedBall_Implementation()
@@ -512,12 +498,11 @@ void ABowlingGameModeBase::SweepState_Implementation()
 {
 	// Disable pin physics for the pins that need to remain standing
 	DisablePinsPhysicsForStandingPins();
-	ResetStandingPinsToOriginalPosition();
 }
 
 void ABowlingGameModeBase::CheckChangePlayerState_Implementation()
 {
-	ResetNonStandingPinsToOriginalPosition();
+	ResetPinsToOriginalPosition();
 
 	// If we should change to the next player, we need to reset the pins
 	if (PlayerShouldChange)
