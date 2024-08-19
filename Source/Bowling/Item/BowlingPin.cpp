@@ -24,6 +24,7 @@ void ABowlingPin::Tick(float DeltaTime)
 
 void ABowlingPin::ResetPinToOriginalPositionAndHide()
 {
+	PinFellOffEdge = true;
 	DisableCollisionsAndPhysics();
 	ResetToOriginalPositionAndRotation();
 	HidePin();

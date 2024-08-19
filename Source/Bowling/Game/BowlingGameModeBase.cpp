@@ -264,7 +264,7 @@ int32 ABowlingGameModeBase::GetNumberOfPinsDown()
 	return NumberOfPinsDown;
 }
 
-void ABowlingGameModeBase::ResetAllPins()
+void ABowlingGameModeBase::ResetAllPinsForNewRound()
 {
 	// Reset all of the pins
 	for (int32 i = 0; i < BowlingPins.Num(); i++)
@@ -280,7 +280,15 @@ void ABowlingGameModeBase::ResetPinsToOriginalPosition()
 	for (int32 i = 0; i < BowlingPins.Num(); i++)
 	{
 		ABowlingPin* BowlingPin = Cast<ABowlingPin>(BowlingPins[i]);
-		BowlingPin->ResetToOriginalPositionAndRotation();
+
+		if (!BowlingPin->IsStanding())
+		{
+			BowlingPin->ResetPinToOriginalPositionAndHide();
+		}
+		else
+		{
+			BowlingPin->ResetToOriginalPositionAndRotation();
+		}
 	}
 }
 
@@ -508,12 +516,12 @@ void ABowlingGameModeBase::CheckChangePlayerState_Implementation()
 	if (PlayerShouldChange)
 	{
 		NextPlayer();
-		ResetAllPins();
+		ResetAllPinsForNewRound();
 	}
 
 	if (PinsShouldBeReset)
 	{
-		ResetAllPins();
+		ResetAllPinsForNewRound();
 	}
 
 	PlayerShouldChange = false;

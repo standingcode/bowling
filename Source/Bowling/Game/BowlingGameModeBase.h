@@ -51,7 +51,7 @@ protected:
 	void DisablePinsPhysicsForStandingPins();
 	void ShowEndPlayersScorecardAndGameOverText();
 	int32 GetNumberOfPinsDown();
-	void ResetAllPins();
+	void ResetAllPinsForNewRound();
 	void ResetPinsToOriginalPosition();
 	void EndGame();
 
