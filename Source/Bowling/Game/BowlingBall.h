@@ -29,15 +29,21 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components") UStaticMeshComponent* Mesh;
 
 	// Variables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) float SidewaysSpeed = 1.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) float BowlingForce = 10.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SidewaysSpeed = 1.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) float MoveLeftAndRightLimit = 72.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BowlingForce = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MoveLeftAndRightLimit = 72.0f;
 
 	bool BallIsInMotion = false;
 	bool BallWasInMotion = false;
 
+	UPROPERTY()
 	class ABowlingGameModeBase* GameMode;
+
 
 	// TODO: Dev stuff maybe delete later
 	void DevKnockPinsDown(int32 NumberOfPins);
@@ -51,11 +57,17 @@ protected:
 private:
 
 	// Variables
+	UPROPERTY()
 	FVector InitialBallPosition;
 
 	// Functions
+	UFUNCTION()
 	void MoveLeftAndRight(float Value);
+
+	UFUNCTION()
 	void Bowl();
+
+	UFUNCTION()
 	void Quit();
 
 	UFUNCTION(BlueprintCallable)
@@ -64,13 +76,22 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void CheckCurrentBallVerticalPositionEndBowlIfBallDroppedOffEdge(float ZPosition);
 
+	UFUNCTION()
 	void DisableCollisions();
+
+	UFUNCTION()
 	void EnableCollisions();
 
+	UFUNCTION()
 	void ReportBallOffEdgeOrStoppedMoving();
 
+	UFUNCTION()
 	void ResetBallPosition();
+
+	UFUNCTION()
 	void HideBall();
+
+	UFUNCTION()
 	void ShowBall();
 
 public:

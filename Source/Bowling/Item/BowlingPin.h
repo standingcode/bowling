@@ -21,29 +21,44 @@ protected:
 	int PinNumber = -1;
 
 	float MinimumValueToConsiderStillStanding = 0.97f;
+
+	UPROPERTY()
 	FVector OriginalLocation;
+
+	UPROPERTY()
 	FRotator OriginalRotation;
+
 	bool PinFellOffEdge = false;
 	float RootOriginalLocationZ;
+
+	UPROPERTY()
+	USceneComponent* OriginalParent;
 
 	// Functions
 
 	virtual void BeginPlay() override;
 	void Tick(float DeltaTime);
 
+	UFUNCTION()
 	void HidePin();
-	void ShowPin();
-	void CheckIfPinFellOffEdge();
-	float GetRootZOffsetComparedToOriginalLocation();
 
-	USceneComponent* OriginalParent;
+	UFUNCTION()
+	void ShowPin();
+
+	UFUNCTION()
+	void CheckIfPinFellOffEdge();
+
+	UFUNCTION()
+	float GetRootZOffsetComparedToOriginalLocation();
 
 public:
 
 	// Functions
+	UFUNCTION()
 	void ResetToOriginalPositionAndRotation();
 
 	// Variables
+
 	int GetPinNumber();
 	bool IsStanding();
 	bool DidFallOffEdge();

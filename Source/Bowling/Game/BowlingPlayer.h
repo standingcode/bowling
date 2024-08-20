@@ -7,13 +7,13 @@
 /**
  *
  */
+
 class BOWLING_API BowlingPlayer
 {
 private:
+
 	FString PlayerName;
-
-	int Score;
-
+	int32 Score;
 	TArray<class BowlingFrameScore*> FrameScores;
 
 public:
@@ -22,9 +22,9 @@ public:
 
 	// Functions
 	void SetName(FString Name);
+	int32 GetRunningScoreForFinalFrame();
 	FString GetName();
 	TArray<class BowlingFrameScore*>* GetAllFrameScores();
-	int32 GetRunningScoreForFinalFrame();
 };
 
 class BOWLING_API BowlingFrameScore

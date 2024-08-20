@@ -13,13 +13,9 @@ ABowlingBall::ABowlingBall()
 
 	// Create the components
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
-	//Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 
 	// Set the Root Component to be our Mesh
 	RootComponent = Mesh;
-
-	//// Set physics to false at the start
-	//Mesh->SetSimulatePhysics(false);
 }
 
 // Called when the game starts or when spawned
@@ -59,16 +55,16 @@ void ABowlingBall::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	InputComponent->BindAction("Quit", IE_Pressed, this, &ABowlingBall::Quit);
 
 	// TODO: Dev stuff maybe delete later
-	InputComponent->BindAction("one", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<1>);
-	InputComponent->BindAction("two", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<2>);
-	InputComponent->BindAction("three", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<3>);
-	InputComponent->BindAction("four", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<4>);
-	InputComponent->BindAction("five", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<5>);
-	InputComponent->BindAction("six", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<6>);
-	InputComponent->BindAction("seven", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<7>);
-	InputComponent->BindAction("eight", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<8>);
-	InputComponent->BindAction("nine", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<9>);
-	InputComponent->BindAction("ten", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<10>);
+	//InputComponent->BindAction("one", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<1>);
+	//InputComponent->BindAction("two", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<2>);
+	//InputComponent->BindAction("three", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<3>);
+	//InputComponent->BindAction("four", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<4>);
+	//InputComponent->BindAction("five", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<5>);
+	//InputComponent->BindAction("six", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<6>);
+	//InputComponent->BindAction("seven", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<7>);
+	//InputComponent->BindAction("eight", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<8>);
+	//InputComponent->BindAction("nine", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<9>);
+	//InputComponent->BindAction("ten", IE_Pressed, this, &ABowlingBall::DevKnockPinsDown<10>);
 }
 
 // TODO: Dev stuff maybe delete later

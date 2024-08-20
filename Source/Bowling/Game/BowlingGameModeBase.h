@@ -39,23 +39,48 @@ protected:
 	virtual void BeginPlay() override;
 	void Tick(float DeltaTime);
 
+	UFUNCTION()
 	void SaveScores();
+
+	UFUNCTION()
 	void CheckPinMovement(float DeltaTime);
+
 	void SaveBowlScore(TArray<BowlingFrameScore*>* FrameScores);
 	void UpdateTotalScore(TArray<BowlingFrameScore*>* FrameScores);
 	void ScoreAnOpenFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
 	bool ScoreASpareFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
 	bool ScoreAStrikeFrame(int32 FrameIndex, TArray<BowlingFrameScore*>* FrameScores);
 	void ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameScores);
+
+	UFUNCTION()
 	void EnablePinsPhysicsAndDetachFromParent();
+
+	UFUNCTION()
 	void DisablePinsPhysicsForStandingPins();
+
+	UFUNCTION()
 	void ShowEndPlayersScorecardAndGameOverText();
+
+	UFUNCTION()
 	int32 GetNumberOfPinsDown();
+
+	UFUNCTION()
 	void ResetAllPinsForNewRound();
+
+	UFUNCTION()
 	void ResetPinsToOriginalPosition();
+
+	UFUNCTION()
 	void EndGame();
 
+	UFUNCTION()
+	void ReturnToMenuAndEndGameIfInProgress();
+
+	UFUNCTION()
+	void NextPlayer();
+
 	// Variables
+	UPROPERTY();
 	TArray<AActor*> BowlingPins;
 
 	TArray<BowlingPlayer*> Players;
@@ -77,13 +102,7 @@ protected:
 	UPROPERTY()
 	UBowlingScorerComponent* BowlingScorerComponent;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	//int NumberOfPlayers = 1;
-
 	int32 CurrentPlayer = 0;
-
-	UFUNCTION()
-	void NextPlayer();
 
 public:
 

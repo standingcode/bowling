@@ -31,9 +31,10 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void CreateScoringWidget(int32 NumberOfScorecards);
-
 public:
 
 	void ShowScorecards(TArray<BowlingPlayer*> players);
+
+	UFUNCTION()
 	void ShowGameOverText();
 };
