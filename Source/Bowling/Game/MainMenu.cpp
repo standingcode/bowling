@@ -98,7 +98,7 @@ void UMainMenu::MoveCursor(int32 DirectionIndex)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, Direction);
 
-	if (GameMode->IsGameInProgress() == true) { return; }
+	if (GameMode->BowlingState != BowlingState::GameEnded) { return; }
 
 	enum CursorDirection CursorDirection = static_cast<enum CursorDirection>(DirectionIndex);
 

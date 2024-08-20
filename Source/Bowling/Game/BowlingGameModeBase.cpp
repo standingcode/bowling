@@ -15,11 +15,6 @@ void ABowlingGameModeBase::BeginPlay()
 
 	// Instantiate a new instance of bowling scorer object
 	BowlingScorerComponent = NewObject<UBowlingScorerComponent>(this, TEXT("BowlingScorerComponent"));
-
-	//BowlingScorerComponent->RegisterComponent();		
-
-	//// Launch new game
-	//ChangeState(static_cast<uint8>(BowlingState::NewGame));
 }
 
 void ABowlingGameModeBase::Tick(float DeltaTime)
@@ -209,7 +204,7 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 
 		if (CurrentPlayer == MainMenuWidget->NumberOfPlayers - 1)
 		{
-			GameIsInProgress = false;
+			ChangeState(static_cast<uint8>(BowlingState::GameEnded));
 		}
 		else
 		{
@@ -227,7 +222,7 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 
 			if (CurrentPlayer == MainMenuWidget->NumberOfPlayers - 1)
 			{
-				GameIsInProgress = false;
+				ChangeState(static_cast<uint8>(BowlingState::GameEnded));
 			}
 			else
 			{
@@ -242,7 +237,7 @@ void ABowlingGameModeBase::ScoreTheEndFrame(TArray<BowlingFrameScore*>* FrameSco
 
 		if (CurrentPlayer == MainMenuWidget->NumberOfPlayers - 1)
 		{
-			GameIsInProgress = false;
+			ChangeState(static_cast<uint8>(BowlingState::GameEnded));
 		}
 		else
 		{
@@ -375,8 +370,6 @@ void ABowlingGameModeBase::ShowAllPlayersScorecards()
 	}
 }
 
-
-
 void ABowlingGameModeBase::ShowEndPlayersScorecardAndGameOverText()
 {
 	if (BowlingWidget)
@@ -398,11 +391,6 @@ void ABowlingGameModeBase::NextPlayer()
 	ShowCurrentPlayerScorecard();
 }
 
-bool ABowlingGameModeBase::IsGameInProgress()
-{
-	return GameIsInProgress;
-}
-
 void ABowlingGameModeBase::EndGame()
 {
 	ShowEndPlayersScorecardAndGameOverText();
@@ -413,6 +401,9 @@ void ABowlingGameModeBase::EndGame()
 void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 {
 	enum BowlingState NewState = static_cast<enum BowlingState>(BowlingStateIndex);
+
+	// If we are in GameEnded state, only new game is allowed
+	if (BowlingState == BowlingState::GameEnded && NewState != BowlingState::NewGame) { return; }
 
 	// Change the checkable state here
 	BowlingState = NewState;
@@ -446,8 +437,12 @@ void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 	case BowlingState::Sweep:
 		SweepState();
 		break;
+
 	case BowlingState::DescendPins:
 		DescendPinsState();
+		break;
+
+	case BowlingState::GameEnded:
 		break;
 
 	default:
@@ -457,8 +452,6 @@ void ABowlingGameModeBase::ChangeState(uint8 BowlingStateIndex)
 
 void ABowlingGameModeBase::NewGame_Implementation()
 {
-	GameIsInProgress = true;
-
 	Players.Empty();
 
 	// Add players 	
@@ -493,7 +486,7 @@ void ABowlingGameModeBase::CheckPinsHaveStoppedMoving_Implementation()
 void ABowlingGameModeBase::AnalyseScoreState_Implementation()
 {
 	SaveScores();
-	if (GameIsInProgress)
+	if (BowlingState != BowlingState::GameEnded)
 	{
 		ShowCurrentPlayerScorecard();
 		ChangeState(static_cast<uint8>(BowlingState::Sweep));

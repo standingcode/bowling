@@ -39,6 +39,14 @@ void ABowlingPin::ReadyPinForNewRound()
 void ABowlingPin::ResetToOriginalPositionAndRotation()
 {
 	Mesh->AttachToComponent(OriginalParent, FAttachmentTransformRules::KeepWorldTransform);
+
+	AActor* Parent = GetAttachParentActor();
+
+	if (Parent == nullptr)
+	{
+		return;
+	}
+
 	SetActorLocation(OriginalLocation + FVector(0.0f, 0.0f, GetRootZOffsetComparedToOriginalLocation()));
 	SetActorRotation(OriginalRotation);
 }
@@ -75,7 +83,15 @@ void ABowlingPin::CheckIfPinFellOffEdge()
 
 float ABowlingPin::GetRootZOffsetComparedToOriginalLocation()
 {
-	return GetAttachParentActor()->GetTransform().GetLocation().Z - RootOriginalLocationZ;
+	AActor* Parent = GetAttachParentActor();
+
+	if (Parent == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::White, FString::Printf(TEXT("Was null")));
+		return 0.0f;
+	}
+
+	return Parent->GetTransform().GetLocation().Z - RootOriginalLocationZ;
 }
 
 void ABowlingPin::HidePin()

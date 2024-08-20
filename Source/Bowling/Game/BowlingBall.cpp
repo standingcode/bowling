@@ -151,6 +151,9 @@ void ABowlingBall::ReportBallOffEdgeOrStoppedMoving()
 
 void ABowlingBall::ResetBallPosition()
 {
+	// Set the mesh velocity to 0
+	Mesh->SetPhysicsAngularVelocityInDegrees(FVector(0, 0, 0));
+	Mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
 	SetActorLocation(InitialBallPosition);
 	SetActorRotation(FRotator(0, 0, 0));
 }

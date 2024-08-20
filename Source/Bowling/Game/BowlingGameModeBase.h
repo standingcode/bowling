@@ -22,7 +22,8 @@ enum class BowlingState : uint8
 	CheckPinsHaveStoppedMoving = 4 UMETA(DisplayName = "Check pins have stopped moving"),
 	AnalyseScore = 5 UMETA(DisplayName = "Analyse the score"),
 	Sweep = 7 UMETA(DisplayName = "Sweep the pins"),
-	DescendPins = 8 UMETA(DisplayName = "Descend the pins")
+	DescendPins = 8 UMETA(DisplayName = "Descend the pins"),
+	GameEnded = 9 UMETA(DisplayName = "Game has ended")
 };
 
 /**
@@ -74,9 +75,6 @@ protected:
 	void EndGame();
 
 	UFUNCTION()
-	void ReturnToMenuAndEndGameIfInProgress();
-
-	UFUNCTION()
 	void NextPlayer();
 
 	// Variables
@@ -88,7 +86,6 @@ protected:
 	bool PinsBeingChecked = false;
 	bool PlayerShouldChange = false;
 	bool PinsShouldBeReset = false;
-	bool GameIsInProgress = false;
 
 	float TimeSinceLastPinMovementCheck = 0.0f;
 	float TimeBetweenPinMovementCheck = 0.1f;
@@ -106,9 +103,7 @@ protected:
 
 public:
 
-	bool IsGameInProgress();
-
-	BowlingState BowlingState = BowlingState::NewGame;
+	BowlingState BowlingState = BowlingState::GameEnded;
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeState(uint8 BowlingStateIndex);
