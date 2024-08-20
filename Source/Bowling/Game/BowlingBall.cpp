@@ -156,6 +156,7 @@ void ABowlingBall::ReportBallOffEdgeOrStoppedMoving()
 void ABowlingBall::ResetBallPosition()
 {
 	SetActorLocation(InitialBallPosition);
+	SetActorRotation(FRotator(0, 0, 0));
 }
 
 void ABowlingBall::ShowBall()
