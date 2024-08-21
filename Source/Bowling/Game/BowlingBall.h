@@ -26,7 +26,11 @@ protected:
 	void Tick(float DeltaTime);
 
 	// Definite components
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components") UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* Mesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UAudioComponent* Audio;
 
 	// Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

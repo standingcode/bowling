@@ -2,6 +2,12 @@
 
 #include "BowlingPin.h"
 
+ABowlingPin::ABowlingPin()
+{
+	Audio = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	Audio->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
+}
+
 void ABowlingPin::BeginPlay()
 {
 	OriginalParent = Mesh->GetAttachmentRoot();
@@ -11,6 +17,9 @@ void ABowlingPin::BeginPlay()
 	OriginalLocation = GetActorLocation();
 	RootOriginalLocationZ = GetAttachParentActor()->GetTransform().GetLocation().Z;
 	OriginalRotation = GetActorRotation();
+
+	// Reference to the GameModeBase script
+	GameMode = Cast<ABowlingGameModeBase>(GetWorld()->GetAuthGameMode());
 }
 
 void ABowlingPin::Tick(float DeltaTime)
@@ -49,6 +58,11 @@ void ABowlingPin::ResetToOriginalPositionAndRotation()
 
 	SetActorLocation(OriginalLocation + FVector(0.0f, 0.0f, GetRootZOffsetComparedToOriginalLocation()));
 	SetActorRotation(OriginalRotation);
+}
+
+bool ABowlingPin::CanPlayHitSound()
+{
+	return GameMode->BowlingState == BowlingState::BallInMotion || GameMode->BowlingState == BowlingState::CheckPinsHaveStoppedMoving;
 }
 
 #pragma endregion

@@ -3,6 +3,7 @@
 #include "BowlingBall.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/AudioComponent.h"
 #include "BowlingGameModeBase.h"
 
 // Sets default values
@@ -13,9 +14,13 @@ ABowlingBall::ABowlingBall()
 
 	// Create the components
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
+	Audio = CreateDefaultSubobject<UAudioComponent>("Audio");
 
 	// Set the Root Component to be our Mesh
 	RootComponent = Mesh;
+
+	// Attach the audio component to the mesh
+	Audio->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -98,6 +103,8 @@ void ABowlingBall::Bowl()
 	Mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
 	Mesh->SetPhysicsAngularVelocityInDegrees(FVector(0, 0, 0));
 	Mesh->AddImpulse(FVector(BowlingForce, 0, 0));
+
+	Audio->Play();
 }
 
 void ABowlingBall::Quit()
@@ -147,6 +154,7 @@ void ABowlingBall::ReportBallOffEdgeOrStoppedMoving()
 	DisableCollisions();
 	GameMode->ChangeState(static_cast<uint8>(BowlingState::CheckPinsHaveStoppedMoving));
 	Mesh->SetSimulatePhysics(false);
+	Audio->Stop();
 }
 
 void ABowlingBall::ResetBallPosition()
