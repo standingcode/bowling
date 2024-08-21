@@ -353,21 +353,26 @@ void ABowlingGameModeBase::DisablePinsPhysicsForStandingPins()
 
 void ABowlingGameModeBase::ShowCurrentPlayerScorecard()
 {
-	if (BowlingWidget)
+	if (CurrentPlayer < 0 || CurrentPlayer >= Players.Num() || BowlingWidget == nullptr)
 	{
-		TArray <BowlingPlayer*> PlayersToShow;
-		PlayersToShow.Add(Players[CurrentPlayer]);
-
-		BowlingWidget->ShowScorecards(PlayersToShow);
+		return;
 	}
+
+	TArray <BowlingPlayer*> PlayersToShow;
+	PlayersToShow.Add(Players[CurrentPlayer]);
+
+	BowlingWidget->ShowScorecards(PlayersToShow);
+
 }
 
 void ABowlingGameModeBase::ShowAllPlayersScorecards()
 {
-	if (BowlingWidget)
+	if (BowlingWidget == nullptr)
 	{
-		BowlingWidget->ShowScorecards(Players);
+		return;
 	}
+
+	BowlingWidget->ShowScorecards(Players);
 }
 
 void ABowlingGameModeBase::ShowEndPlayersScorecardAndGameOverText()

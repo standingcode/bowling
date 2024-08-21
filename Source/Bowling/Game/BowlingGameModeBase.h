@@ -103,6 +103,7 @@ protected:
 
 public:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	BowlingState BowlingState = BowlingState::GameEnded;
 
 	UFUNCTION(BlueprintCallable)
