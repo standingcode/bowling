@@ -104,7 +104,12 @@ void ABowlingBall::Bowl()
 	Mesh->SetPhysicsAngularVelocityInDegrees(FVector(0, 0, 0));
 	Mesh->AddImpulse(FVector(BowlingForce, 0, 0));
 
-	Audio->Play();
+	PlayerBowled();
+	//Audio->Play();
+}
+
+void ABowlingBall::PlayerBowled_Implementation()
+{
 }
 
 void ABowlingBall::Quit()

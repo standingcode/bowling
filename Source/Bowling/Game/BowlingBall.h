@@ -48,6 +48,9 @@ protected:
 	UPROPERTY()
 	class ABowlingGameModeBase* GameMode;
 
+	UFUNCTION(BlueprintNativeEvent)
+	void PlayerBowled();
+
 
 	// TODO: Dev stuff maybe delete later
 	void DevKnockPinsDown(int32 NumberOfPins);
